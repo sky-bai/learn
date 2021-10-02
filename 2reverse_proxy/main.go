@@ -46,13 +46,21 @@ func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
 	modifyFunc := func(response *http.Response) error {
 		if response.StatusCode != 200 {
 
+			// 拿到返回内容 响应的内容在http的body里面
 			oldPayload, err := ioutil.ReadAll(response.Body)
 			if err != nil {
 				return err
 			}
 
+			// 1.修改body 和 body对应的contentLength
+
+			// 在后面追加内容
 			newPayLoad := []byte("hello" + string(oldPayload))
+			// 将内容回写到回复里面
+			// 内容长度是按照body的长度来的
 			response.ContentLength = int64(len(newPayLoad))
+
+			// 我们要让客户端知道他读到响应的大小，所以我们在header里面设置
 			response.Header.Set("Content-Length", fmt.Sprint(len(newPayLoad)))
 		}
 		return nil
