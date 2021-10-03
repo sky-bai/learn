@@ -1,5 +1,1 @@
 package loadBalance
-
-func main() {
-
-}

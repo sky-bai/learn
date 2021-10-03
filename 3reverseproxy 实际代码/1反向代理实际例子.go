@@ -24,7 +24,7 @@ func main() {
 
 	// 将url存入切片
 	urls := []*url.URL{url1, url2}
-	proxy := httputil.NewMultipleHostReverseProxy(urls)
-	log.Println("Starting serve at " + addr)
-	log.Fatal(http.ListenAndServe(addr, proxy))
+	//proxy := httputil.NewMultipleHostReverseProxy(urls)
+	//log.Println("Starting serve at " + addr)
+	//log.Fatal(http.ListenAndServe(addr, proxy))
 }
