@@ -1,5 +1,5 @@
-package loadBalance
-
-func NewConsistentHashBalance(replicas int, fn Hash) {
-
-}
+//package loadBalance
+//
+//func NewConsistentHashBalance(replicas int, fn Hash) {
+//
+//}
