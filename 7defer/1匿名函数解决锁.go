@@ -6,6 +6,7 @@ import (
 )
 
 // defer 是在函数退出的时候进行执行的
+// 函数 return 之前处理某个语句或函数
 
 func main() {
 	sync := sync2.Mutex{}
