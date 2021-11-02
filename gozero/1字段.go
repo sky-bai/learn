@@ -28,4 +28,5 @@ type GatewayServiceInfo struct {
 
 func main() {
 	fmt.Println(gatewayServiceInfoRowsExpectAutoSet)
+	fmt.Println(gatewayServiceInfoRowsWithPlaceHolder)
 }
