@@ -15,7 +15,6 @@ func main() {
 				return
 			default:
 				println("work")
-				//time.Sleep(time.Second)
 			}
 		}
 	}(ctx)

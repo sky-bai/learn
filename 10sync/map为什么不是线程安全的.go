@@ -48,3 +48,8 @@ func once1(name string) string {
 }
 
 // do 方法将 map的创建和 访问放在一起
+
+// 4200 - 500 = 3700
+// 3700 - 3300 = 400
+
+// partition 分区 文件夹 topic的内容存不下了 broker 一台服务器节点
