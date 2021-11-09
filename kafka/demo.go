@@ -28,5 +28,3 @@ func main() {
 	}
 	fmt.Printf("pid : %v,offset: %v\n\n", pid, offset)
 }
-
-// 让这个项目访问 kafka 这个容器
