@@ -15,7 +15,7 @@ func main() {
 	msg.Topic = "白"
 	msg.Value = sarama.StringEncoder("白")
 
-	producer, err := sarama.NewSyncProducer([]string{"127.0.0.1:9092"}, config)
+	producer, err := sarama.NewSyncProducer([]string{"0.0.0.0:9092"}, config)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -28,3 +28,5 @@ func main() {
 	}
 	fmt.Printf("pid : %v,offset: %v\n\n", pid, offset)
 }
+
+// 让这个项目访问 kafka 这个容器
