@@ -10,7 +10,7 @@ func main() {
 	config.Producer.RequiredAcks = sarama.WaitForAll          // 让leader 和 follower都确认
 	config.Producer.Partitioner = sarama.NewRandomPartitioner // 新选出一个partition
 	config.Producer.Return.Successes = true                   // 成功交付的消息将在success channel返回
-	fmt.Println()
+
 	msg := &sarama.ProducerMessage{}
 	msg.Topic = "白"
 	msg.Value = sarama.StringEncoder("白")
@@ -27,4 +27,6 @@ func main() {
 		return
 	}
 	fmt.Printf("pid : %v,offset: %v\n\n", pid, offset)
+	fmt.Println("执行完成")
+
 }
