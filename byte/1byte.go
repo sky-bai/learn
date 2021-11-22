@@ -7,5 +7,7 @@ import "fmt"
 // 字符串转字节数组 字节数组每一个存的是每个字符的编码
 func main() {
 	bytes := []byte("hello")
+	bytes1 := []byte("白")
+	fmt.Println(len(bytes1))
 	fmt.Println(bytes)
 }
