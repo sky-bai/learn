@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -56,7 +57,11 @@ func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
 
 			// 在后面追加内容
 			newPayLoad := []byte("hello" + string(oldPayload))
-			// 将内容回写到回复里面
+			// 将内容回写到回复里面 这里需要一个bytes转io.ReadCloser的方法
+			response.Body = io.NopCloser(strings.NewReader(string(newPayLoad)))
+			// 一个具体的类型实现了某一接口的方法，那么该类型就实现了该接口，该类型变量就是该接口变量
+			// response.Body 是一个readCloser接口 那么我就要让我的内容实现readCloser接口里面的方法 把该接口变量转换成readCloser接口变量
+
 			// 内容长度是按照body的长度来的
 			response.ContentLength = int64(len(newPayLoad))
 
@@ -66,6 +71,7 @@ func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
 		return nil
 	}
 
+	// 官方提供的new方式只是一个对某一内容的实现，reverserProxy是实现功能的结构体，我们可以通过New方法进行设置我们想要的ReverseProxy结构体去实现我们想要的功能
 	return &httputil.ReverseProxy{Director: director, ModifyResponse: modifyFunc}
 }
 
