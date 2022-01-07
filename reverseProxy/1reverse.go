@@ -22,3 +22,10 @@ func main() {
 	log.Println("Starting httpserver at " + addr)
 	http.ListenAndServe(addr, proxy)
 }
+
+//  这个反向代理结构体需要一个下游服务器的地址。
+///  也就是说为这个handler 是一个反向代理结构体 他也实现了 ServerHttp 方法
+//
+// 反向代理结构体的作用是 根据传入的url（也就是下游服务器地址） 去构建一个http服务器 当请求这个http服务器的时候 就会把请求转发到 下游的服务器上面
+
+// 反向代理服务器的作用就是将请求转发到设置的服务器上面
