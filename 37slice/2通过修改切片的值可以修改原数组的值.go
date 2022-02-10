@@ -16,3 +16,5 @@ func main() {
 }
 
 // 切片与数组数据共享
+// s[low : high : max]
+//从切片s的索引位置low到high处所获得的切片，len=high-low，cap=max-low
