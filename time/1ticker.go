@@ -2,17 +2,19 @@ package main
 
 import (
 	"fmt"
+	"sync/atomic"
 	"time"
 )
 
 func main() {
-
+	var TickerCount int64
+	TickerCount = 1
 	ticker := time.NewTicker(2 * time.Second)
 	defer ticker.Stop()
 
 	done := make(chan bool)
 	go func() {
-		time.Sleep(10 * time.Second)
+		time.Sleep(20 * time.Second)
 		done <- true
 	}()
 	for {
@@ -21,6 +23,8 @@ func main() {
 			fmt.Println("Done!")
 			return
 		case t := <-ticker.C:
+			tickerCount := atomic.LoadInt64(&TickerCount) //获取数据
+			fmt.Println("TickerCount:", tickerCount)
 			fmt.Println("Current time: ", t)
 		}
 	}
