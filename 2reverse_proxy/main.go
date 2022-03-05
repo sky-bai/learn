@@ -26,12 +26,14 @@ func main() {
 	log.Println("Starting httpserver at " + addr)
 	http.ListenAndServe(addr, proxy)
 }
+
+// NewSingleHostReverseProxy 提供一个修改请求url反向代理的结构体 需要提供
 func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
 	targetQuery := target.RawQuery        // ？后面的查询参数 a=111&b=456
 	director := func(req *http.Request) { // 将原请求修改为目标请求
 		req.URL.Scheme = target.Scheme // scheme http
 		req.URL.Host = target.Host
-		req.URL.Path, req.URL.RawPath = joinURLPath(target, req.URL)
+		req.URL.Path, req.URL.RawPath = joinURLPath(target, req.URL) // 确定新的url
 		if targetQuery == "" || req.URL.RawQuery == "" {
 			req.URL.RawQuery = targetQuery + req.URL.RawQuery
 		} else {
