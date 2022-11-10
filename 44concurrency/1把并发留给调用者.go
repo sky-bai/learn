@@ -34,6 +34,7 @@ func (t *Tracker) Run() {
 	t.stop <- struct{}{}
 }
 func (t *Tracker) Shutdown(ctx context.Context) {
+	// 能写这个channel的owner 才能关闭channel
 	close(t.ch) // 这里暂停之后 就没法往ch里面发送数据了 Run方法将消费完ch剩下的数据 通知goroutine进行暂停 这里有ctx控制超时，如果track的任务在规定时间没有完成也会退出
 	select {
 	case <-ctx.Done():
