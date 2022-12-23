@@ -2,23 +2,26 @@ package main
 
 import (
 	"fmt"
+	"github.com/jinzhu/now"
 	"time"
 )
 
 func main() {
-	str := "2022-11-11"
+
+	str := "2022-11-11 11:11:11"
 
 	loc, _ := time.LoadLocation("Local")
 
-	the_time, _ := time.ParseInLocation("2006-01-02", str, loc)
-
-	fmt.Println(the_time.Format("2006-01-02"))
+	the_time, _ := time.ParseInLocation("2006-01-02 15:04:05 ", str, loc)
+	fmt.Println("------", the_time)
+	fmt.Println("11111", now.With(the_time).Year())
 	currentTime := time.Now()
 	yesterTime := currentTime.Add(-24 * time.Hour)
 	fmt.Println(yesterTime)
 
 	utcTime := time.Now().UTC().Round(time.Second)
-	fmt.Println(utcTime)
+	fmt.Println("utcTime", utcTime)
+
 }
 
 // Go的time. Now()会设置时间为本地时区，转字符串时，如果有时区就会加上+8的这样的字样，

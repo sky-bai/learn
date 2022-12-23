@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
+    <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16271f2c-ed9b-4677-9b36-1a5486d2152b" name="Default Changelist" comment="函数式编程" />
+    <list default="true" id="16271f2c-ed9b-4677-9b36-1a5486d2152b" name="Default Changelist" comment="channel len">
+      <change afterPath="$PROJECT_DIR$/36time/2_now.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/36time/3_utc_mills.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/36time/4_week.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/36time/5_day.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/39redis/3_divide.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/39redis/4_float64.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/39redis/5_set_slice.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/39redis/6_set_time.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/39redis/7_set_struct.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/52redis/1set.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sort/two_sum.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/35atomic/1addInt32.go" beforeDir="false" afterPath="$PROJECT_DIR$/35atomic/1addInt32.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/36time/1time.go" beforeDir="false" afterPath="$PROJECT_DIR$/36time/1time.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/39redis/1连接redis.go" beforeDir="false" afterPath="$PROJECT_DIR$/39redis/1连接redis.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/41_tcp/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/41_tcp/client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/41_tcp/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/41_tcp/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/54_openTelemetry/svc1/svc1.go" beforeDir="false" afterPath="$PROJECT_DIR$/54_openTelemetry/svc1/svc1.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/9errors/1wraperrors.go" beforeDir="false" afterPath="$PROJECT_DIR$/9errors/1wraperrors.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/new1/new.go" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,11 +38,11 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="GOROOT" url="file:///opt/homebrew/Cellar/go/1.19.3/libexec" />
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="develop" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -34,6 +55,12 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="true" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="1vu6G0rMV2c3pYYfsUCkodY1Kcu" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -42,16 +69,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="DefaultGoTemplateProperty" value="Go File" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="go.import.settings.migrated" value="true" />
-    <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/new" />
-    <property name="settings.editor.selected.configurable" value="go.vgo" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.format.on.save.advertiser.fired&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/blj/Downloads/skybai/learn&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/new" />
@@ -59,6 +92,66 @@
       <recent name="$PROJECT_DIR$/pointer " />
       <recent name="$PROJECT_DIR$" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/54_openTelemetry/offweb/main" />
+      <recent name="$PROJECT_DIR$/54_openTelemetry/svc1" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Build.go build learn/40channel">
+    <configuration name="go build learn/39redis (1)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="learn" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <package value="learn/39redis" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/39redis/7_set_struct.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build learn/39redis (4)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="learn" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <package value="learn/39redis" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/39redis/1连接redis.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build learn/39redis (5)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="learn" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <package value="learn/39redis" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/39redis/6_set_time.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build learn/40channel" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="learn" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <package value="learn/40channel" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/40channel/2_channel_len.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build learn/41_tcp" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="learn" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <package value="learn/41_tcp" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/41_tcp/server.go" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build learn/40channel" />
+        <item itemvalue="Go Build.go build learn/41_tcp" />
+        <item itemvalue="Go Build.go build learn/39redis (1)" />
+        <item itemvalue="Go Build.go build learn/39redis (5)" />
+        <item itemvalue="Go Build.go build learn/39redis (4)" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
@@ -67,6 +160,31 @@
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
+        <entry key="7f7c2446-0f2f-4e24-88a1-522f294d5015">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State />
@@ -74,20 +192,50 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="7f7c2446-0f2f-4e24-88a1-522f294d5015" value="TOOL_WINDOW" />
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="指针" />
     <MESSAGE value="init" />
     <MESSAGE value="函数式编程" />
-    <option name="LAST_COMMIT_MESSAGE" value="函数式编程" />
+    <MESSAGE value="login" />
+    <MESSAGE value="main" />
+    <MESSAGE value="main2" />
+    <MESSAGE value="add openTelemetry" />
+    <MESSAGE value="位运算" />
+    <MESSAGE value="openTelemetry demo" />
+    <MESSAGE value="time round" />
+    <MESSAGE value="goredis pipeline" />
+    <MESSAGE value="tcp client server" />
+    <MESSAGE value="channel len" />
+    <option name="LAST_COMMIT_MESSAGE" value="channel len" />
   </component>
   <component name="VgoProject">
-    <integration-enabled>true</integration-enabled>
     <environment>
       <map>
         <entry key="GOPROXY" value="https://goproxy.cn,direct" />
       </map>
     </environment>
+    <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/36time/2_now.go</url>
+          <line>12</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/36time/2_now.go</url>
+          <line>19</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

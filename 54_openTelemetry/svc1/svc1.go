@@ -202,7 +202,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	otel.SetTracerProvider(tp)
 
 	ctx, cancel := context.WithCancel(context.Background())

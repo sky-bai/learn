@@ -8,7 +8,7 @@ import (
 
 func Add() {
 	var x int32
-
+	// 多协程执行并发累计变量
 	var wg sync.WaitGroup
 
 	for i := 0; i < 10000000; i++ {
