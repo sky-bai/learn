@@ -4,27 +4,17 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16271f2c-ed9b-4677-9b36-1a5486d2152b" name="Default Changelist" comment="channel len">
-      <change afterPath="$PROJECT_DIR$/36time/2_now.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/36time/3_utc_mills.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/36time/4_week.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/36time/5_day.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/39redis/3_divide.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/39redis/4_float64.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/39redis/5_set_slice.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/39redis/6_set_time.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/39redis/7_set_struct.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/52redis/1set.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sort/two_sum.go" afterDir="false" />
+    <list default="true" id="16271f2c-ed9b-4677-9b36-1a5486d2152b" name="Default Changelist" comment="os_getwd">
+      <change afterPath="$PROJECT_DIR$/23math/1_chu.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/23math/2_gin.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/62_switch/2_timewheel.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/62_switch/3_timewheels.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/64_viper/config/base.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/64_viper/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/64_viper/util/config.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/35atomic/1addInt32.go" beforeDir="false" afterPath="$PROJECT_DIR$/35atomic/1addInt32.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/36time/1time.go" beforeDir="false" afterPath="$PROJECT_DIR$/36time/1time.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/39redis/1连接redis.go" beforeDir="false" afterPath="$PROJECT_DIR$/39redis/1连接redis.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/41_tcp/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/41_tcp/client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/41_tcp/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/41_tcp/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/54_openTelemetry/svc1/svc1.go" beforeDir="false" afterPath="$PROJECT_DIR$/54_openTelemetry/svc1/svc1.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/9errors/1wraperrors.go" beforeDir="false" afterPath="$PROJECT_DIR$/9errors/1wraperrors.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/new1/new.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,22 +59,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.format.on.save.advertiser.fired&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/blj/Downloads/skybai/learn&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.format.on.save.advertiser.fired": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "/Users/blj/Downloads/skybai/learn",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/new" />
@@ -97,59 +89,66 @@
       <recent name="$PROJECT_DIR$/54_openTelemetry/svc1" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build learn/40channel">
-    <configuration name="go build learn/39redis (1)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Go Build.go build learn/23math (2)">
+    <configuration name="go build 2_timewheel.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="learn" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
-      <package value="learn/39redis" />
+      <package value="learn/62_switch" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/39redis/7_set_struct.go" />
+      <filePath value="$PROJECT_DIR$/62_switch/2_timewheel.go" />
       <method v="2" />
     </configuration>
-    <configuration name="go build learn/39redis (4)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build learn/23math (2)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
       <module name="learn" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
-      <package value="learn/39redis" />
+      <package value="learn/23math" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/39redis/1连接redis.go" />
+      <filePath value="$PROJECT_DIR$/23math/2_gin.go" />
       <method v="2" />
     </configuration>
-    <configuration name="go build learn/39redis (5)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build learn/23math" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="learn" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
-      <package value="learn/39redis" />
+      <package value="learn/23math" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/39redis/6_set_time.go" />
+      <filePath value="$PROJECT_DIR$/23math/1_chu.go" />
       <method v="2" />
     </configuration>
-    <configuration name="go build learn/40channel" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build learn/62_switch" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="learn" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
-      <package value="learn/40channel" />
+      <package value="learn/62_switch" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/40channel/2_channel_len.go" />
+      <filePath value="$PROJECT_DIR$/62_switch/3_timewheels.go" />
       <method v="2" />
     </configuration>
-    <configuration name="go build learn/41_tcp" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build learn/6os" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="learn" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
-      <package value="learn/41_tcp" />
+      <package value="learn/6os" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/41_tcp/server.go" />
+      <filePath value="$PROJECT_DIR$/6os/2_os.getwd.go" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Go Build.go build learn/23math (2)" />
+      <item itemvalue="Go Build.go build learn/23math" />
+      <item itemvalue="Go Build.go build learn/62_switch" />
+      <item itemvalue="Go Build.go build learn/6os" />
+      <item itemvalue="Go Build.go build 2_timewheel.go" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build learn/40channel" />
-        <item itemvalue="Go Build.go build learn/41_tcp" />
-        <item itemvalue="Go Build.go build learn/39redis (1)" />
-        <item itemvalue="Go Build.go build learn/39redis (5)" />
-        <item itemvalue="Go Build.go build learn/39redis (4)" />
+        <item itemvalue="Go Build.go build learn/23math (2)" />
+        <item itemvalue="Go Build.go build learn/23math" />
+        <item itemvalue="Go Build.go build 2_timewheel.go" />
+        <item itemvalue="Go Build.go build learn/62_switch" />
+        <item itemvalue="Go Build.go build learn/6os" />
       </list>
     </recent_temporary>
   </component>
@@ -212,7 +211,8 @@
     <MESSAGE value="goredis pipeline" />
     <MESSAGE value="tcp client server" />
     <MESSAGE value="channel len" />
-    <option name="LAST_COMMIT_MESSAGE" value="channel len" />
+    <MESSAGE value="os_getwd" />
+    <option name="LAST_COMMIT_MESSAGE" value="os_getwd" />
   </component>
   <component name="VgoProject">
     <environment>
