@@ -4,20 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16271f2c-ed9b-4677-9b36-1a5486d2152b" name="Default Changelist" comment="time.Since(startTime)">
-      <change afterPath="$PROJECT_DIR$/16json/2_int.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/22string/3_url_sprilt.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/39redis/goredis/get.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/42_testify/3_go_demo_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/59_pprof/prometheus/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/61_ants/2_demo.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/61_ants/redis.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sync/3_pool.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/44concurrency/1把并发留给调用者.go" beforeDir="false" afterPath="$PROJECT_DIR$/44concurrency/1把并发留给调用者.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-    </list>
+    <list default="true" id="16271f2c-ed9b-4677-9b36-1a5486d2152b" name="Default Changelist" comment="all" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -226,7 +213,8 @@
     <MESSAGE value="ants" />
     <MESSAGE value="求出余数" />
     <MESSAGE value="time.Since(startTime)" />
-    <option name="LAST_COMMIT_MESSAGE" value="time.Since(startTime)" />
+    <MESSAGE value="all" />
+    <option name="LAST_COMMIT_MESSAGE" value="all" />
   </component>
   <component name="VgoProject">
     <environment>
