@@ -44,7 +44,6 @@ func main() {
 	wg.Wait() // 使用wg的话 可以等待所有任务执行完成
 	fmt.Printf("running goroutines: %d\n", ants.Running())
 	fmt.Printf("finish all tasks.\n")
-	// 添加定时任务的时候不能通过协程
 
 	// 2.已知任务类型,只需要提供invoke函数供上层调用
 	// Use the pool with a function,  全部添加到协程池
@@ -63,3 +62,8 @@ func main() {
 	fmt.Printf("running goroutines: %d\n", p.Running())
 	fmt.Printf("finish all tasks, result is %d\n", sum)
 }
+
+// 添加定时任务的时候不能通过协程
+// 时间轮删除任务在设置任务之前 然后还是会执行一次
+// 调用三方组件 查看耗时
+// 先从redis取 取不到再从mysql取
