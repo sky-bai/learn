@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// 搞清楚你启的goroutine 什么时候能够结束
+// 搞清楚你起的goroutine 什么时候能够结束
 // 你有没有一个手段能够控制他结束
 
 // 往channel写的主动方 决定何时关闭 channel
