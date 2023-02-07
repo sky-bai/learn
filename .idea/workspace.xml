@@ -153,11 +153,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build learn/6os" />
-        <item itemvalue="Go Test.TestIsAllLowerCase in learn/42_testify" />
         <item itemvalue="Go Test.TestSomething in learn/42_testify" />
-        <item itemvalue="Go Build.go build learn/16json" />
+        <item itemvalue="Go Test.TestIsAllLowerCase in learn/42_testify" />
         <item itemvalue="Go Build.go build learn/61_ants" />
+        <item itemvalue="Go Build.go build learn/16json" />
+        <item itemvalue="Go Build.go build learn/6os" />
       </list>
     </recent_temporary>
   </component>
