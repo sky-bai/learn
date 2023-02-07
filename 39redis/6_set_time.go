@@ -9,19 +9,22 @@ import (
 
 func main() {
 	ctx := context.Background()
+	startTime := time.Now()
+	fmt.Println("start", startTime)
 
 	rdb := redis.NewClient(&redis.Options{
 		Addr: "127.0.0.1:6379",
+		DB:   0,
 	})
-	var time = time.Now()
+	var time1 = time.Now()
 
-	rdb.Set(ctx, "time", time, 0)
-	time, err := rdb.Get(ctx, "time").Time()
+	rdb.Set(ctx, "time1112", time1, 0)
+	time1, err := rdb.Get(ctx, "time1112").Time()
 	if err != nil {
 		fmt.Println("---", err)
 		return
 	}
 
-	fmt.Println("-----------------", time)
+	fmt.Println("-----------------", time.Since(startTime))
 
 }
