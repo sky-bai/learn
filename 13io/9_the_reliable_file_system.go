@@ -56,20 +56,3 @@ func Upload(u io.Reader) (err error) {
 // 最长子序列 二叉树的遍历
 
 // 只能建立一次连接
-
-func OsCreateTemp() error {
-	// os 创建一个临时文件
-	f, err := os.CreateTemp("", "example") // 文件名就是 pattern + random string
-	if err != nil {
-		return err
-	}
-	defer os.Remove(f.Name()) // clean up
-
-	if _, err := f.Write([]byte("content")); err != nil {
-		return err
-	}
-	if err := f.Close(); err != nil {
-		return err
-	}
-	return nil
-}
