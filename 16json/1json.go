@@ -32,6 +32,12 @@ func main() {
 		fmt.Println("error:", err)
 	}
 	fmt.Printf("%+v", te)
+	aa, err := jsoniter.Marshal(te)
+	if err != nil {
+		fmt.Println("error:", err)
+
+	}
+	fmt.Println("---", aa)
 }
 
 // json 解析过后的数据用结构体去接收

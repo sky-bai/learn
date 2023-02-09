@@ -30,4 +30,7 @@ func main() {
 		return
 	}
 	fmt.Println("+++", float)
+
+	fmt.Println("---", 1/2) // 求出商
+
 }

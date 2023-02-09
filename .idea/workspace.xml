@@ -4,19 +4,13 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16271f2c-ed9b-4677-9b36-1a5486d2152b" name="Default Changelist" comment="time.Since(startTime)">
-      <change afterPath="$PROJECT_DIR$/16json/2_int.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/22string/3_url_sprilt.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/39redis/goredis/get.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/42_testify/3_go_demo_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/59_pprof/prometheus/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/61_ants/2_demo.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/61_ants/redis.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sync/3_pool.go" afterDir="false" />
+    <list default="true" id="16271f2c-ed9b-4677-9b36-1a5486d2152b" name="Default Changelist" comment="all">
+      <change afterPath="$PROJECT_DIR$/13io/9_the_reliable_file_system_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/44concurrency/1把并发留给调用者.go" beforeDir="false" afterPath="$PROJECT_DIR$/44concurrency/1把并发留给调用者.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/13io/9_the_reliable_file_system.go" beforeDir="false" afterPath="$PROJECT_DIR$/13io/9_the_reliable_file_system.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/16json/1json.go" beforeDir="false" afterPath="$PROJECT_DIR$/16json/1json.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/23math/1_chu.go" beforeDir="false" afterPath="$PROJECT_DIR$/23math/1_chu.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/6os/3_chu.go" beforeDir="false" afterPath="$PROJECT_DIR$/6os/3_chu.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,22 +87,22 @@
     </key>
   </component>
   <component name="RunManager" selected="Go Build.go build learn/6os">
-    <configuration name="go build learn/16json" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build learn/16json (1)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="learn" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
       <package value="learn/16json" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/16json/2_int.go" />
+      <filePath value="$PROJECT_DIR$/16json/1json.go" />
       <method v="2" />
     </configuration>
-    <configuration name="go build learn/61_ants" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build learn/23math" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="learn" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
-      <package value="learn/61_ants" />
+      <package value="learn/23math" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/61_ants/1_demo.go" />
+      <filePath value="$PROJECT_DIR$/23math/1_chu.go" />
       <method v="2" />
     </configuration>
     <configuration name="go build learn/6os" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
@@ -145,19 +139,19 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Go Build.go build learn/16json (1)" />
       <item itemvalue="Go Build.go build learn/6os" />
-      <item itemvalue="Go Build.go build learn/16json" />
-      <item itemvalue="Go Build.go build learn/61_ants" />
+      <item itemvalue="Go Build.go build learn/23math" />
       <item itemvalue="Go Test.TestIsAllLowerCase in learn/42_testify" />
       <item itemvalue="Go Test.TestSomething in learn/42_testify" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build learn/6os" />
+        <item itemvalue="Go Build.go build learn/16json (1)" />
+        <item itemvalue="Go Build.go build learn/23math" />
         <item itemvalue="Go Test.TestSomething in learn/42_testify" />
         <item itemvalue="Go Test.TestIsAllLowerCase in learn/42_testify" />
-        <item itemvalue="Go Build.go build learn/61_ants" />
-        <item itemvalue="Go Build.go build learn/16json" />
-        <item itemvalue="Go Build.go build learn/6os" />
       </list>
     </recent_temporary>
   </component>
@@ -226,7 +220,8 @@
     <MESSAGE value="ants" />
     <MESSAGE value="求出余数" />
     <MESSAGE value="time.Since(startTime)" />
-    <option name="LAST_COMMIT_MESSAGE" value="time.Since(startTime)" />
+    <MESSAGE value="all" />
+    <option name="LAST_COMMIT_MESSAGE" value="all" />
   </component>
   <component name="VgoProject">
     <environment>

@@ -9,4 +9,7 @@ func main() {
 	//w1 := j % i // 求余数
 	fmt.Println(w)
 	//fmt.Println(w1)
+
+	u := float64(4001)
+	fmt.Println(u / 1000)
 }
