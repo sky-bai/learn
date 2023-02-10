@@ -38,7 +38,7 @@ func main() {
 	}
 
 	time.Sleep(time.Second * 4)
-	ok, err := mutex.Extend()
+	ok, err := mutex.Extend() // 红锁版本的延长锁的时间
 	if err != nil {
 		fmt.Println(err)
 
