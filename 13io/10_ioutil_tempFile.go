@@ -91,3 +91,7 @@ func GetLastE() {
 	st := path.Base("D:/go.txt") // 返回路径的最后一个元素 go.txt
 	fmt.Println("---", st)
 }
+
+// os.Create  os.CreateTemp 三者的区别
+// os.Create 创建一个文件 如果文件存在 则清空文件内容 如果文件不存在 则创建一个新的文件
+// os.CreateTemp 创建一个临时文件 临时文件是在磁盘上的 但是临时文件的内容是在内存中的
