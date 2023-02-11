@@ -59,8 +59,6 @@ func main() {
 //
 //这给 Save 的调用者带来了问题，因为它可能希望在写入文档后将其他数据写入流。
 //
-//// Save writes the contents of doc to the supplied
-//// Writer.
+// Save writes the contents of doc to the supplied
+// Writer.
 //func Save(w io.Writer, doc *Document) error
-
-//

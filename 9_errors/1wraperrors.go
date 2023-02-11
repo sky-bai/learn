@@ -1,8 +1,8 @@
 package main
 
 import (
-	"errors"
 	"fmt"
+	"github.com/pkg/errors"
 )
 
 func do() error {
@@ -19,3 +19,12 @@ func main() {
 }
 
 var ActionRedis = errors.New("ActionRedis: redis error")
+
+func handle() error {
+	err := do()
+	if err != nil {
+		return errors.Wrap(err, "handle")
+	}
+}
+
+// 什么时候需要打印堆栈信息？
