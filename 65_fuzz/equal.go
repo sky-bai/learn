@@ -1,4 +1,4 @@
-package fuzz
+package _5_fuzz
 
 func Equal(a, b []byte) bool {
 	if len(a) != len(b) {

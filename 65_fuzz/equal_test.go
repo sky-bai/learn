@@ -1,4 +1,4 @@
-package fuzz
+package _5_fuzz
 
 import "testing"
 
@@ -8,7 +8,7 @@ func TestEqual(t *testing.T) {
 	}
 }
 
-// go test -fuzz FuzzEqual -fuzztime 10s
+// go test -65_fuzz FuzzEqual -fuzztime 10s
 func FuzzEqual(f *testing.F) {
 	f.Fuzz(func(t *testing.T, a []byte, b []byte) {
 		Equal(a, b)
