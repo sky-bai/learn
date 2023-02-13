@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package user;  // 声明所在包
+
+option go_package = "learn/proto/user";  // 声明生成的 go 文件所属的包
+
+import "learn/proto/user/message.proto";  // 导入同包内的其他 proto 文件
+import "learn/proto/article/message.proto";  // 导入其他包的 proto 文件
+
+service User {
+  rpc GetUserInfo (UserID) returns (UserInfo);
+  rpc GetUserFavArticle (UserID) returns (article.Articles.Article);
+}

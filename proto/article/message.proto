@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package article;
+
+option go_package = "learn/proto/article";
+
+message Articles {
+  repeated Article Articles = 1;
+  message Article {
+    int64 ID = 1;
+    string Title = 2;
+  }
+}

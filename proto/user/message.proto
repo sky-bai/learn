@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "learn/proto/user";
+
+message UserID {
+  int64 ID = 1;
+}
+
+message UserInfo {
+  int64 ID = 1;
+  string Name = 2;
+  int32 Age = 3;
+  gender Gender = 4;
+  enum gender {
+    MALE = 0;
+    FEMALE = 1;
+  }
+}
