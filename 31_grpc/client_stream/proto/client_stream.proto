@@ -1,26 +1,26 @@
 syntax = "proto3";
 
-package proto;
+package deviceInfo; // 这只是区别proto文件的包名
 
-option go_package = "31_grpc/client_stream/proto";
+option go_package = "31_grpc/client_stream/proto"; // 其他go项目引入的报名始终是proto
 
 
 // 定义流式请求信息
 message StreamRequest{
-    //流式请求参数
-    string stream_data = 1;
+  //流式请求参数
+  string stream_data = 1;
 }
 
 
 // 定义响应信息
 message SimpleResponse{
-    //响应码
-    int32 code = 1;
-    //响应值
-    string value = 2;
+  //响应码
+  int32 code = 1;
+  //响应值
+  string value = 2;
 }
 
 service StreamClient{
-    // 客户端流式rpc，在请求的参数前添加stream
-    rpc RouteList (stream StreamRequest) returns (SimpleResponse){};
+  // 客户端流式rpc，在请求的参数前添加stream
+  rpc RouteList (stream StreamRequest) returns (SimpleResponse){};
 }
