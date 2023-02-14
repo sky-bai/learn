@@ -39,7 +39,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	//defer s.Stop()
+	defer s.Stop()
 	pb.RegisterGreeterServer(s, &server{})
 
 	log.Printf("server listening at %v", lis.Addr())
