@@ -18,3 +18,7 @@ message UserInfo {
     FEMALE = 1;
   }
 }
+
+
+// message 文件 这里是定义入参和出参
+// service 文件 定义接口方法
