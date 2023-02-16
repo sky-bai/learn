@@ -19,42 +19,42 @@ func main() {
 	defer client.Close()
 
 	// Create a new lock client.
-	//locker := redislock.New(client)
+	locker := redislock.New(client)
 
 	ctx := context.Background()
 	//
-	//// Try to obtain lock.
-	//lock, err := locker.Obtain(ctx, "my-key", 10*time.Second, nil)
-	//if err == redislock.ErrNotObtained {
-	//	fmt.Println("Could not obtain lock!")
-	//} else if err != nil {
-	//	fmt.Println(err)
-	//}
-	//
-	//// Don't forget to defer Release.
-	//defer lock.Release(ctx)
-	//fmt.Println("I have a lock!")
-	//
-	//// Sleep and check the remaining TTL.
-	//time.Sleep(50 * time.Second)
-	//if ttl, err := lock.TTL(ctx); err != nil {
-	//	//log.Fatalln(err)
-	//} else if ttl > 0 {
-	//	fmt.Println("Yay, I still have my lock!")
-	//}
-	//
-	////Extend my lock.
-	//if err := lock.Refresh(ctx, 10*time.Second, nil); err != nil {
-	//	fmt.Println(err)
-	//}
-	//
-	//// Sleep a little longer, then check.
-	//time.Sleep(100 * time.Millisecond)
-	//if ttl, err := lock.TTL(ctx); err != nil {
-	//	//log.Fatalln(err)
-	//} else if ttl == 0 {
-	//	fmt.Println("Now, my lock has expired!")
-	//}
+	// Try to obtain lock.
+	lock, err := locker.Obtain(ctx, "my-key", 10*time.Second, nil)
+	if err == redislock.ErrNotObtained {
+		fmt.Println("Could not obtain lock!")
+	} else if err != nil {
+		fmt.Println(err)
+	}
+
+	// Don't forget to defer Release.
+	defer lock.Release(ctx)
+	fmt.Println("I have a lock!")
+
+	// Sleep and check the remaining TTL.
+	time.Sleep(50 * time.Second)
+	if ttl, err := lock.TTL(ctx); err != nil {
+		//log.Fatalln(err)
+	} else if ttl > 0 {
+		fmt.Println("Yay, I still have my lock!")
+	}
+
+	//Extend my lock.
+	if err := lock.Refresh(ctx, 10*time.Second, nil); err != nil {
+		fmt.Println(err)
+	}
+
+	// Sleep a little longer, then check.
+	time.Sleep(100 * time.Millisecond)
+	if ttl, err := lock.TTL(ctx); err != nil {
+		//log.Fatalln(err)
+	} else if ttl == 0 {
+		fmt.Println("Now, my lock has expired!")
+	}
 
 	m := new(MyCustomLock)
 	m.client = client
@@ -65,6 +65,8 @@ func main() {
 	time.Sleep(2 * time.Minute)
 
 }
+
+// 两种方式一种是使用过期时间 一个是延长时间  或者是回滚时间
 
 type MyCustomLock struct {
 	client *redis.Client
@@ -94,6 +96,7 @@ func (m MyCustomLock) lock(ctx context.Context, key string, opt *redislock.Optio
 				return
 			case <-myT.C:
 				fmt.Println("1")
+				// Refresh extends the lock with a new TTL.
 				err := lock.Refresh(ctx, -1*time.Second, nil)
 				if err != nil {
 

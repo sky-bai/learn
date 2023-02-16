@@ -29,6 +29,9 @@ func (s *SimpleService) RouteList(srv pb.StreamClient_RouteListServer) error {
 		if res.StreamData == "over" {
 			//发送结果，并关闭
 			return srv.SendAndClose(&pb.SimpleResponse{Value: "ok"})
+
+			// 如果是结束消息，就不再接收消息
+
 		}
 	}
 }
