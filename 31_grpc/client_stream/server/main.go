@@ -26,12 +26,22 @@ func (s *SimpleService) RouteList(srv pb.StreamClient_RouteListServer) error {
 			return err
 		}
 		log.Println(res.StreamData)
+		if res.StreamData == "over" {
+			//发送结果，并关闭
+			return srv.SendAndClose(&pb.SimpleResponse{Value: "ok"})
+
+			// 如果是结束消息，就不再接收消息
+
+		}
 	}
 }
 
+// 第一个是如何判断流是否结束，这里我们使用了io.EOF，这是一个标准的错误类型，当流结束时，会返回这个错误。
+// 熄火/断线在redis中将它的地理位置删除 是判断redis是否有值，来判断是否在线 那是否可以在设备端来发送我是否在线的消息。
+
 const (
 	// Address 监听地址
-	Address string = ":8000"
+	Address string = ":9900"
 	// Network 网络通信协议
 	Network string = "tcp"
 )
