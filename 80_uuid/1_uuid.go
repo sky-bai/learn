@@ -6,7 +6,6 @@ import (
 )
 
 func main() {
-
 	uuid := uuid.New()
 	key := uuid.String()
 	fmt.Println(key)
