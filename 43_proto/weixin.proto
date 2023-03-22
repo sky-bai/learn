@@ -1,0 +1,28 @@
+package XJWeixin;
+message GpsData {
+    /**保留6位小数的纬度*/
+    required double latitude = 1;
+    /**保留6位小数的经度*/
+    required double longitude = 2;
+    /**格林威治时间戳*/
+    required fixed64 timestamp = 3;
+    /**保留1位小数的km/h速度*/
+    optional float speed = 4;
+    /**保留1位小数的0-360的方向，0为正北*/
+    optional float bearing = 5;
+    /**水平gps精度*/
+    optional int32 haccuracy = 6;
+    /**海拔高度，保留1位小数，单位m*/
+    optional float altitude = 7;
+    /**垂直海拔精度*/
+    optional int32 vaccuracy = 8;
+    /**卫星数*/
+    optional uint32 satellite = 9;
+}
+
+message GpsDataList {
+    repeated GpsData gpsList = 1;
+}
+
+
+// 传的是二进制
