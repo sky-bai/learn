@@ -10,16 +10,17 @@ var ErrNotFound = errors.New("err")
 var ErrPermission = errors.New("ErrPermission")
 
 func main() {
-	err := ReadConfig()
+	err := ReadConfig() //
+	err = parseArgs([]string{"1", "2"})
 	if err != nil { // 在逻辑处理最顶层把堆栈信息直接打出来
 		fmt.Printf("original error: %T %v \n", errors.Cause(err), errors.Cause(err)) // %T 打印错误类型 %v打印错误本身 与 sentinel error 进行 == 判断
 		fmt.Printf("stack trace error:  %+v \n", err)                                // %+v 打印错误堆栈信息
 	}
-	err = fmt.Errorf("access denied: %w", ErrPermission) // 加入额外信息
-
-	if errors.Is(err, ErrNotFound) {
-		// 将错误与sentinel 错误 进行比较
-	}
+	//err = fmt.Errorf("access denied: %w", ErrPermission) // 加入额外信息
+	//
+	//if errors.Is(err, ErrNotFound) {
+	//	// 将错误与sentinel 错误 进行比较
+	//}
 }
 
 func ReadConfig() error {
