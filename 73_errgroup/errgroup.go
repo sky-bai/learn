@@ -117,4 +117,3 @@ func (g *KratosGroup) Wait() error {
 	}
 	return g.err
 }
-""

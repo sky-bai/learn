@@ -21,17 +21,17 @@ var (
 
 type (
 	// ForEachFunc is used to do element processing, but no output.
-	ForEachFunc[T any] func(item T)
+	ForEachFunc[T any] func(item T) // 要处理的每个元素
 	// GenerateFunc is used to let callers send elements into source.
-	GenerateFunc[T any] func(source chan<- T) // 传入一个只写的chan 类型为任意类型
+	GenerateFunc[T any] func(source chan<- T) // 传入一个只写的chan 类型为任意类型 因为是流数据所有用管道
 	// MapFunc is used to do element processing and write the output to writer.
-	MapFunc[T, U any] func(item T, writer Writer[U])
+	MapFunc[T, U any] func(item T, writer Writer[U]) // 某个元素，一个实现了Writer接口的任意类型
 	// MapperFunc is used to do element processing and write the output to writer,
 	// use cancel func to cancel the processing.
 	MapperFunc[T, U any] func(item T, writer Writer[U], cancel func(error))
 	// ReducerFunc is used to reduce all the mapping output and write to writer,
 	// use cancel func to cancel the processing.
-	ReducerFunc[U, V any] func(pipe <-chan U, writer Writer[V], cancel func(error))
+	ReducerFunc[U, V any] func(pipe <-chan U, writer Writer[V], cancel func(error)) // 聚合所有的map的结果，写入到writer中
 	// VoidReducerFunc is used to reduce all the mapping output, but no output.
 	// Use cancel func to cancel the processing.
 	VoidReducerFunc[U any] func(pipe <-chan U, cancel func(error))
@@ -128,7 +128,7 @@ func ForEach[T any](generate GenerateFunc[T], mapper ForEachFunc[T], opts ...Opt
 // and reduces the output elements with given reducer.
 func MapReduce[T, U, V any](generate GenerateFunc[T], mapper MapperFunc[T, U], reducer ReducerFunc[U, V],
 	opts ...Option) (V, error) {
-	panicChan := &onceChan{channel: make(chan any)}
+	panicChan := &onceChan{channel: make(chan any)} // 创造一个panic chan
 	source := buildSource(generate, panicChan)
 	return mapReduceWithPanicChan(source, panicChan, mapper, reducer, opts...)
 }
