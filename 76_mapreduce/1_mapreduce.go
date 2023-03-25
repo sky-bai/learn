@@ -20,13 +20,13 @@ var (
 )
 
 type (
-	// ForEachFunc is used to do element processing, but no output.
+	// ForEachFunc is used to do element processing, but no output. mapper 是对每个元素进行处理
 	ForEachFunc[T any] func(item T) // 要处理的每个元素
 	// GenerateFunc is used to let callers send elements into source.
-	GenerateFunc[T any] func(source chan<- T) // 传入一个只写的chan 类型为任意类型 因为是流数据所有用管道
+	GenerateFunc[T any] func(source chan<- T) // 传入一个只写的chan 类型为任意类型 因为是流数据所有用管道 接受所有元素的通道
 	// MapFunc is used to do element processing and write the output to writer.
 	MapFunc[T, U any] func(item T, writer Writer[U]) // 某个元素，一个实现了Writer接口的任意类型
-	// MapperFunc is used to do element processing and write the output to writer,
+	// MapperFunc is used to do element processing and write the output to writer, 处理每个元素 并写入到writer 单独处理每个元素
 	// use cancel func to cancel the processing.
 	MapperFunc[T, U any] func(item T, writer Writer[U], cancel func(error))
 	// ReducerFunc is used to reduce all the mapping output and write to writer,
@@ -111,9 +111,10 @@ func ForEach[T any](generate GenerateFunc[T], mapper ForEachFunc[T], opts ...Opt
 		doneChan:  done,
 		workers:   options.workers,
 	})
-
+	// 其实就是一个事件在做的时候，如果其他优先级更高的事情发生了就不执行该事情了。
 	for {
 		select {
+		// 两个事件
 		case v := <-panicChan.channel:
 			panic(v)
 		case _, ok := <-collector:
@@ -126,8 +127,7 @@ func ForEach[T any](generate GenerateFunc[T], mapper ForEachFunc[T], opts ...Opt
 
 // MapReduce maps all elements generated from given generate func,
 // and reduces the output elements with given reducer.
-func MapReduce[T, U, V any](generate GenerateFunc[T], mapper MapperFunc[T, U], reducer ReducerFunc[U, V],
-	opts ...Option) (V, error) {
+func MapReduce[T, U, V any](generate GenerateFunc[T], mapper MapperFunc[T, U], reducer ReducerFunc[U, V], opts ...Option) (V, error) {
 	panicChan := &onceChan{channel: make(chan any)} // 创造一个panic chan
 	source := buildSource(generate, panicChan)
 	return mapReduceWithPanicChan(source, panicChan, mapper, reducer, opts...)
@@ -141,43 +141,57 @@ func MapReduceChan[T, U, V any](source <-chan T, mapper MapperFunc[T, U], reduce
 }
 
 // MapReduceChan maps all elements from source, and reduce the output elements with given reducer.
-func mapReduceWithPanicChan[T, U, V any](source <-chan T, panicChan *onceChan, mapper MapperFunc[T, U],
-	reducer ReducerFunc[U, V], opts ...Option) (val V, err error) {
+func mapReduceWithPanicChan[T, U, V any](source <-chan T, panicChan *onceChan, mapper MapperFunc[T, U], reducer ReducerFunc[U, V], opts ...Option) (val V, err error) {
+	// 1.创建option 作用是什么 ？ 用于控制mapreduce的行为
 	options := buildOptions(opts...)
 	// output is used to write the final result
-	output := make(chan V)
+	// 2.创建最终的结果chan 作用是用于写入最终的结果
+	output := make(chan V) // 最终的结果
+	// 3.创建panic chan
 	defer func() {
-		// reducer can only write once, if more, panic
+		// reducer can only write once, if more, panic // 聚合函数只能写一次，如果多次写入，会panic
 		for range output {
 			panic("more than one element written in reducer")
 		}
 	}()
 
+	// 4.创建collector chan 作用是用于写入map的结果
 	// collector is used to collect data from mapper, and consume in reducer
 	collector := make(chan U, options.workers)
+
+	// 5.创建done chan 作用是用于通知mapper和reducer退出
 	// if done is closed, all mappers and reducer should stop processing
-	done := make(chan struct{})
+	done := make(chan struct{}) // 创建一个完成的信号
+	// 6.创建mapper的上下文
 	writer := newGuardedWriter(options.ctx, output, done)
+
+	// 7.创建只关闭一次的once
 	var closeOnce sync.Once
+	// 8.使用原子操作避免数据竞争
 	// use atomic.Value to avoid data race
 	var retErr atomic.Value
+	// 9.创建finish 关闭done output chan 作用是避免内存泄漏
 	finish := func() {
 		closeOnce.Do(func() {
 			close(done)
 			close(output)
 		})
 	}
+	// 10.看球不懂 创建一个cancel的方法 作用是 如果有错误了，就关闭done chan 和 output chan 和排干里面的元素
 	cancel := once(func(err error) {
 		if err != nil {
 			retErr.Store(err)
 		} else {
 			retErr.Store(ErrCancelWithNil)
 		}
-
+		// 释放资源
+		// 1.排干chan里面的元素
 		drain(source)
+		// 2.关闭done chan
 		finish()
 	})
 
+	// 11.异步执行reducer
 	go func() {
 		defer func() {
 			drain(collector)
@@ -263,7 +277,7 @@ func buildOptions(opts ...Option) *mapReduceOptions {
 }
 
 func buildSource[T any](generate GenerateFunc[T], panicChan *onceChan) chan T {
-	source := make(chan T)
+	source := make(chan T) // 创造一个meta data  chan
 	go func() {
 		defer func() {
 			if r := recover(); r != nil {
@@ -278,7 +292,7 @@ func buildSource[T any](generate GenerateFunc[T], panicChan *onceChan) chan T {
 	return source
 }
 
-// drain drains the channel.
+// drain drains the channel.  // 排干channel
 func drain[T any](channel <-chan T) {
 	// drain the channel
 	for range channel {
@@ -333,9 +347,9 @@ func newOptions() *mapReduceOptions {
 	}
 }
 
-func once(fn func(error)) func(error) {
-	once := new(sync.Once)
-	return func(err error) {
+func once(fn func(error)) func(error) { // sync.Once 和 sync.Once.Do 的区别 sync.Once 的创建和使用
+	once := new(sync.Once)   // 单飞库的使用
+	return func(err error) { // 高阶函数创建对象，低阶函数调用对象方法
 		once.Do(func() {
 			fn(err)
 		})
