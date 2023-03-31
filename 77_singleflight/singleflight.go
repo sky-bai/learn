@@ -35,6 +35,7 @@ func (p *panicError) Error() string {
 	return fmt.Sprintf("%v\n\n%s", p.value, p.stack)
 }
 
+// newPanicError creates a panicError with the given value and stack trace.
 func newPanicError(v interface{}) error {
 	stack := debug.Stack()
 
@@ -105,11 +106,16 @@ func (g *Group) Do(key string, fn func() (interface{}, error)) (v interface{}, e
 		c.wg.Wait()
 
 		// 这里区分 panic 错误和 runtime 的错误，避免出现死锁，后面可以看到为什么这么做
-		if e, ok := c.err.(*panicError); ok {
+		if e, ok := c.err.(*panicError); ok { // 如果是
 			// 如果返回的是 panic 错误，为了避免 channel 死锁，我们需要确保这个 panic 无法被恢复
 			panic(e)
-		} else if c.err == errGoExit {
-			runtime.Goexit()
+		} else if c.err == errGoExit { // 什么时候会出现需要退出的error
+			/**
+			GoExit
+			调用runtime.goExit()将立即终止当前goroutine执行，调度器
+			确保所有已注册defer延迟调度被执行。
+			*/
+			runtime.Goexit() // runtime.GoExit函数在终止调用它的Goroutine的运行之前会先执行该Goroutine中还没有执行的defer语句。
 		}
 		return c.val, c.err, true
 	}
@@ -165,7 +171,7 @@ func (g *Group) DoChan(key string, fn func() (interface{}, error)) <-chan Result
 // 这个方法种有个技巧值得学习，使用了两个 defer 巧妙的将 runtime 的错误和我们传入 function 的 panic 区别开来避免了由于传入的 function panic 导致的死锁。
 
 // doCall handles the single call for a key.
-func (g *Group) doCall(c *call, key string, fn func() (interface{}, error)) {
+func (g *Group) doCall(c *call, key string, fn func() (interface{}, error)) { // 对实际执行操作的结果进行处理
 
 	// 1.先用匿名函数执行实际操作函数 做好recover操作
 	// 2.函数执行完就删除key
@@ -177,7 +183,7 @@ func (g *Group) doCall(c *call, key string, fn func() (interface{}, error)) {
 	defer func() { // 抓住本函数错误
 		// 如果既没有正常执行完毕，又没有 recover 那就说明需要直接退出了
 		// the given function invoked runtime.Goexit // 通过这个来判断是否是runtime导致直接退出了
-		if !normalReturn && !recovered {
+		if !normalReturn && !recovered { // 没有正常返回和没有recover住
 			c.err = errGoExit // 返回runtime错误信息
 		}
 
@@ -188,16 +194,16 @@ func (g *Group) doCall(c *call, key string, fn func() (interface{}, error)) {
 			delete(g.m, key) // 当有一个请求执行完毕，就从map中删除这个key
 		}
 		// 检测是否出现了panic错误
-		if e, ok := c.err.(*panicError); ok {
+		if e, ok := c.err.(*panicError); ok { // 如果是fn实际操作函数的实际错误 就要防止channel出现死锁
 			// In order to prevent the waiting channels from being blocked forever,
 			// needs to ensure that this panic cannot be recovered.
-			if len(c.chans) > 0 {
-				go panic(e) // 开一个写成panic
+			if len(c.chans) > 0 { // 为了防止等待通道永远被阻塞，需要确保这种恐慌无法恢复。
+				go panic(e) // 开一个协程panic 没有懂这一步
 				select {}   // Keep this goroutine around so that it will appear in the crash dump. // 保持住这个goroutine，这样可以将panic写入crash dump
 			} else {
 				panic(e)
 			}
-		} else if c.err == errGoExit {
+		} else if c.err == errGoExit { // 如果是程序本身runtime时的error 就直接退出
 			// Already in the process of goexit, no need to call again
 			// 已经准备退出了，也就不用做其他操作了
 		} else {
@@ -210,7 +216,7 @@ func (g *Group) doCall(c *call, key string, fn func() (interface{}, error)) {
 	}()
 	// 使用一个匿名函数来执行 // 使用匿名函数目的是recover住panic，返回信息给上层
 	func() {
-		defer func() {
+		defer func() { // 第一个defer处理实际函数执行时可能出现的error
 			if !normalReturn {
 				// 如果 panic 了我们就 recover 掉，然后 new 一个 panic 的错误
 				// 后面在上层重新 panic
@@ -222,18 +228,19 @@ func (g *Group) doCall(c *call, key string, fn func() (interface{}, error)) {
 				// the time we know that, the part of the stack trace relevant to the
 				// panic has been discarded.
 				if r := recover(); r != nil {
-					c.err = newPanicError(r)
+					c.err = newPanicError(r) // 如果不是正常返回，就把panic的错误信息返回给上层 就把fn的错误往上抛
 				}
 			}
 		}()
 
-		c.val, c.err = fn() // 如果 fn 没有 panic 就会执行到这一步，如果 panic 了就不会执行到这一步  匿名函数调用传入进来的函数 再用defer进行recover 操作
-		normalReturn = true // 所以可以通过这个变量来判断是否 panic了 如果fn()函数 panic了，那么就不会执行这个赋值操作，就会recover住这个传入函数的error
+		c.val, c.err = fn() // 匿名函数调用传入进来的函数 再用defer进行recover 操作
+		// 如果 fn 没有 panic 就会执行到这一步，如果 panic 了就不会执行到这一步
+		normalReturn = true // 所以可以通过这个变量来判断是否 panic了 如果fn()函数 panic了，那么就不会执行这个赋值操作，就会recover住这个传入函数的error 正常返回修改标识位
 	}()
-	// 如果 normalReturn 为 false 就表示，我们的 fn panic 了
+	// 如果 normalReturn 为 false 就表示我们的 fn panic 了
 	// 如果执行到了这一步，也说明我们的 fn  recover 住了，不是直接 runtime exit
 	if !normalReturn {
-		recovered = true
+		recovered = true // 这里说明没有正常返回，但是recover住了
 	}
 }
 
@@ -251,3 +258,4 @@ func (g *Group) Forget(key string) {
 // 处理的窗口期是 也就是说当前周期进行归并的请求和第一个请求开始到结束时间间隔区间来的请求
 // 在那里删除key？ 判断结果的指针是否相同，如果相同才能删除
 // 用go语言的并发编程去解决之前的问题
+// 什么时候会出现channel 死锁？
