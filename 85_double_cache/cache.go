@@ -48,7 +48,7 @@ type Item struct { // 传入参数
 	// Default TTL is 1 hour.
 	TTL time.Duration
 
-	// Do returns value to be cached.
+	// Do returns value to be cached. // 返回被缓存的值
 	Do func(*Item) (interface{}, error)
 
 	// SetXX only sets the key if it already exists. key已存在才设置
@@ -149,6 +149,7 @@ func (cd *Cache) Set(item *Item) error {
 }
 
 func (cd *Cache) set(item *Item) ([]byte, bool, error) {
+	// 1.对进行缓存的值进行序列化处理
 	value, err := item.value()
 	if err != nil {
 		return nil, false, err
@@ -158,7 +159,7 @@ func (cd *Cache) set(item *Item) ([]byte, bool, error) {
 	if err != nil {
 		return nil, false, err
 	}
-
+	// 2.判断是否要设置本地缓存
 	if cd.opt.LocalCache != nil && !item.SkipLocalCache {
 		cd.opt.LocalCache.Set(item.Key, b)
 	}
@@ -174,11 +175,11 @@ func (cd *Cache) set(item *Item) ([]byte, bool, error) {
 	if ttl == 0 {
 		return b, true, nil
 	}
-
+	// 3.判断是否要设置redis缓存
 	if item.SetXX {
 		return b, true, cd.opt.Redis.SetXX(item.Context(), item.Key, b, ttl).Err()
 	}
-	if item.SetNX {
+	if item.SetNX { // 不存在才设置 todo 什么时候会设置这个值 ？
 		return b, true, cd.opt.Redis.SetNX(item.Context(), item.Key, b, ttl).Err()
 	}
 	return b, true, cd.opt.Redis.Set(item.Context(), item.Key, b, ttl).Err()
@@ -281,7 +282,7 @@ func (cd *Cache) Once(item *Item) error { // 确保只有一次
 
 func (cd *Cache) getSetItemBytesOnce(item *Item) (b []byte, cached bool, err error) {
 	if cd.opt.LocalCache != nil {
-		b, err := cd.opt.LocalCache.Get(item.Key)
+		b, err := cd.opt.LocalCache.Get(item.Key) // 如果设置了本地缓存，就先从本地缓存里面拿
 		if err == nil {
 			return b, true, nil
 		} else {
