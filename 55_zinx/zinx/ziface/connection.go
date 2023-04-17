@@ -13,6 +13,8 @@ type IConnection interface {
 	Stop()
 	// GetConnID 从当前连接获取原始的socket TCPConn GetTCPConnection() *net.TCPConn //获取当前连接ID
 	GetConnID() uint32 //获取远程客户端地址信息 RemoteAddr() net.Addr
+
+	GetTCPConnection() *net.TCPConn
 }
 
 // HandFunc 定义一个统一处理链接业务的接口 包含链接 请求端的数据 以及数据的长度

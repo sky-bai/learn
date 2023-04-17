@@ -3,6 +3,7 @@ package znet
 import (
 	"fmt"
 	"github.com/aceld/zinx/znet"
+	"learn/55_zinx/zinx/utils"
 	"net"
 	"time"
 
@@ -77,15 +78,20 @@ func (s *Server) Serve() {
 }
 
 // NewServer 创建一个服务器句柄
-func NewServer(name string) ziface.IServer {
+/*
+  创建一个服务器句柄
+*/
+func NewServer() ziface.IServer {
+	//先初始化全局配置文件
+	utils.GlobalObject.Reload()
+
 	s := &Server{
-		Name:      name,
+		Name:      utils.GlobalObject.Name, //从全局参数获取
 		IPVersion: "tcp4",
-		IP:        "0.0.0.0",
-		Port:      7777,
+		IP:        utils.GlobalObject.Host,    //从全局参数获取
+		Port:      utils.GlobalObject.TcpPort, //从全局参数获取
 		Router:    nil,
 	}
-
 	return s
 }
 
@@ -99,6 +105,33 @@ func (s *Server) AddRouter(router ziface.IRouter) {
 // PingRouter ping test 自定义路由
 type PingRouter struct {
 	znet.BaseRouter //一定要先基础BaseRouter
+}
+
+// Test PreHandle
+func (p *PingRouter) PreHandle(request ziface.IRequest) {
+	fmt.Println("Call Router PreHandle  pre")
+	_, err := request.GetConnection().GetTCPConnection().Write([]byte("before ping ....\n"))
+	if err != nil {
+		fmt.Println("call back ping ping ping error")
+	}
+}
+
+// Test Handle
+func (p *PingRouter) Handle(request ziface.IRequest) {
+	fmt.Println("Call PingRouter Handle ----")
+	_, err := request.GetConnection().GetTCPConnection().Write([]byte("ping...ping...ping\n"))
+	if err != nil {
+		fmt.Println("call back ping ping ping error")
+	}
+}
+
+// Test PostHandle
+func (p *PingRouter) PostHandle(request ziface.IRequest) {
+	fmt.Println("Call Router PostHandle post")
+	_, err := request.GetConnection().GetTCPConnection().Write([]byte("After ping .....\n"))
+	if err != nil {
+		fmt.Println("call back ping ping ping error")
+	}
 }
 
 // 传入一个9个字节长的数据，分多次put （对应于TCP中的分包的情况）
