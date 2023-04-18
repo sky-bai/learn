@@ -52,11 +52,14 @@ func (dp *DataPack) Unpack(binaryData []byte) (ziface.IMessage, error) {
 
 	//只解压head的信息，得到dataLen和msgID
 	msg := &Message{}
-
 	//读dataLen
 	if err := binary.Read(dataBuff, binary.LittleEndian, &msg.DataLen); err != nil {
 		return nil, err
 	}
+	// 在这段代码中，结构体 Message 的字段顺序是 Id、DataLen、Data，在解析数据包时，根据顺序读取 DataLen、Id 字段的数据，解析完 DataLen 和 Id 之后， Data 字段的内容还没有读取。
+	//
+	// 在这里，binary.Read(dataBuff, binary.LittleEndian, &msg.DataLen) 读取的数据长度只是 DataLen 字段所占用的长度，读取时会将数据解析为 uint32 类型，随后存入 msg.DataLen 字段中。
+	// 相当于是我存入了一个 uint32 类型的数据，读取出的也是一个 uint32 类型的数据，这个数据就是 DataLen 字段的值。
 
 	//读msgID
 	if err := binary.Read(dataBuff, binary.LittleEndian, &msg.Id); err != nil {

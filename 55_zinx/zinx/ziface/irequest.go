@@ -14,6 +14,7 @@ IRequest 接口：
 type IRequest interface {
 	GetConnection() IConnection //获取请求连接信息
 	GetData() []byte            //获取请求消息的数据
+	GetMsgID() uint32           //获取请求的消息ID
 }
 
 // 不难看出，当前的抽象层只提供了两个Getter方法，所以有个成员应该是必须的，一个是客户端连接，一个是客户端传递进来的数据，当然随着Zinx框架的功能丰富，这里面还应该继续添加新的成员。

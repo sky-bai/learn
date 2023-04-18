@@ -2,6 +2,7 @@ package ziface
 
 // IRouter 路由配置抽象类
 // 现在我们来给Zinx实现一个非常简单基础的路由功能，目的当然就是为了快速的让Zinx步入到路由的阶段。后续我们会不断的完善路由功能。
+// 路由就是真正处理的实际逻辑
 
 type IRouter interface {
 	// PreHandle 在处理conn业务之前的钩子方法Hook

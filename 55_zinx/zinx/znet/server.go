@@ -15,8 +15,8 @@ type Server struct {
 	IPVersion string
 	IP        string
 	Port      int
-	//当前Server由用户绑定的回调router,也就是Server注册的链接对应的处理业务
-	Router ziface.IRouter
+	//当前Server的消息管理模块，用来绑定MsgId和对应的处理方法
+	msgHandler ziface.IMsgHandle
 }
 
 // Start 启动服务器
@@ -49,7 +49,7 @@ func (s *Server) Start() {
 			//3.2 TODO Server.Start() 设置服务器最大连接控制,如果超过最大连接，那么则关闭此新的连接
 
 			//3.3 处理该新连接请求的 业务 方法， 此时应该有 handler 和 conn是绑定的
-			dealConn := NewConnection(conn, cid, s.Router) // 将connection的连接和handle绑定
+			dealConn := NewConnection(conn, cid, s.msgHandler) // 将connection的连接和handle绑定
 			cid++
 
 			//3.4 启动当前链接的处理业务
@@ -86,19 +86,18 @@ func NewServer() ziface.IServer {
 	utils.GlobalObject.Reload()
 
 	s := &Server{
-		Name:      utils.GlobalObject.Name, //从全局参数获取
-		IPVersion: "tcp4",
-		IP:        utils.GlobalObject.Host,    //从全局参数获取
-		Port:      utils.GlobalObject.TcpPort, //从全局参数获取
-		Router:    nil,
+		Name:       utils.GlobalObject.Name, //从全局参数获取
+		IPVersion:  "tcp4",
+		IP:         utils.GlobalObject.Host,    //从全局参数获取
+		Port:       utils.GlobalObject.TcpPort, //从全局参数获取
+		msgHandler: NewMsgHandle(),
 	}
 	return s
 }
 
 // AddRouter 路由功能：给当前服务注册一个路由业务方法，供客户端链接处理使用
-func (s *Server) AddRouter(router ziface.IRouter) {
-	s.Router = router
-
+func (s *Server) AddRouter(msgId uint32, router ziface.IRouter) {
+	s.msgHandler.AddRouter(msgId, router)
 	fmt.Println("Add Router succ! ")
 }
 
@@ -107,7 +106,6 @@ type PingRouter struct {
 	znet.BaseRouter //一定要先基础BaseRouter
 }
 
-// Test PreHandle
 func (p *PingRouter) PreHandle(request ziface.IRequest) {
 	fmt.Println("Call Router PreHandle  pre")
 	_, err := request.GetConnection().GetTCPConnection().Write([]byte("before ping ....\n"))
@@ -116,7 +114,6 @@ func (p *PingRouter) PreHandle(request ziface.IRequest) {
 	}
 }
 
-// Test Handle
 func (p *PingRouter) Handle(request ziface.IRequest) {
 	fmt.Println("Call PingRouter Handle ----")
 	_, err := request.GetConnection().GetTCPConnection().Write([]byte("ping...ping...ping\n"))
@@ -125,7 +122,6 @@ func (p *PingRouter) Handle(request ziface.IRequest) {
 	}
 }
 
-// Test PostHandle
 func (p *PingRouter) PostHandle(request ziface.IRequest) {
 	fmt.Println("Call Router PostHandle post")
 	_, err := request.GetConnection().GetTCPConnection().Write([]byte("After ping .....\n"))
@@ -134,12 +130,22 @@ func (p *PingRouter) PostHandle(request ziface.IRequest) {
 	}
 }
 
-// 传入一个9个字节长的数据，分多次put （对应于TCP中的分包的情况）
-// 传入一个3个字节的数据和一个6个字节的数据，一次put（对应于TCP中的粘包的情况）
-// 大数据处理测试 (20MB)
-
-// 缓存区长度，默认8k 使得缓存区的长度可以自定义
-
 // 现在我们就给用户提供一个自定义的conn处理业务的接口吧，很显然，
 // 我们不能把业务处理的方法绑死在type HandFunc func(*net.TCPConn, []byte, int) error这种格式中，
 // 我们需要定一些interface{}来让用户填写任意格式的连接处理业务方法。
+
+// HelloZinxRouter Handle
+type HelloZinxRouter struct {
+	znet.BaseRouter
+}
+
+func (h *HelloZinxRouter) Handle(request ziface.IRequest) {
+	fmt.Println("Call HelloZinxRouter Handle")
+	//先读取客户端的数据，再回写ping...ping...ping
+	fmt.Println("recv from client : msgId=", request.GetMsgID(), ", data=", string(request.GetData()))
+
+	err := request.GetConnection().SendMsg(1, []byte("Hello Zinx Router V0.6"))
+	if err != nil {
+		fmt.Println(err)
+	}
+}

@@ -15,6 +15,9 @@ type IConnection interface {
 	GetConnID() uint32 //获取远程客户端地址信息 RemoteAddr() net.Addr
 
 	GetTCPConnection() *net.TCPConn
+
+	// SendMsg 直接将Message数据发送数据给远程的TCP客户端
+	SendMsg(msgId uint32, data []byte) error
 }
 
 // HandFunc 定义一个统一处理链接业务的接口 包含链接 请求端的数据 以及数据的长度
@@ -22,3 +25,5 @@ type HandFunc func(*net.TCPConn, []byte, int) error
 
 // 该接⼝的一些基础方法，代码注释已经介绍的很清楚，这⾥先简单说明⼀一个HandFunc这个函数类型， 这个是所有conn链接在处理业务的函数接口，
 // 第一参数是socket原⽣链接，第⼆个参数是客户端请求的数据，第三个参数是客户端请求的数据长度。这样，如果我们想要指定一个conn的处理业务，只要定义一个HandFunc类型的函数，然后和该链接绑定就可以了。
+
+// 现在我们已经将拆包的功能集成到Zinx中了，但是使用Zinx的时候，如果我们希望给用户返回一个TLV格式的数据，总不能每次都经过这么繁琐的过程，所以我们应该给Zinx提供一个封包的接口，供Zinx发包使用。

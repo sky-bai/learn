@@ -29,9 +29,9 @@ func main() {
 			//创建封包拆包对象dp
 			dp := znet.NewDataPack()
 			for {
-				//1 先读出流中的head部分
-				headData := make([]byte, dp.GetHeadLen())
-				_, err := io.ReadFull(conn, headData) //ReadFull 会把msg填充满为止
+				// 1.先读出流中的head部分
+				headData := make([]byte, dp.GetHeadLen()) // 根据字段长度读取数据
+				_, err := io.ReadFull(conn, headData)     //ReadFull 会把msg填充满为止
 				if err != nil {
 					fmt.Println("read head error")
 					break
@@ -48,7 +48,7 @@ func main() {
 					msg := msgHead.(*znet.Message)
 					msg.Data = make([]byte, msg.GetDataLen())
 
-					//根据dataLen从io中读取字节流
+					// 2.根据dataLen从io中读取字节流
 					_, err := io.ReadFull(conn, msg.Data)
 					if err != nil {
 						fmt.Println("server unpack data err:", err)
