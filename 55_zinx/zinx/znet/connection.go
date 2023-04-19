@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"learn/55_zinx/zinx/utils"
 	"learn/55_zinx/zinx/ziface"
 	"net"
 )
@@ -24,6 +25,11 @@ type Connection struct { // 对象的属性
 
 	//告知该链接已经退出/停止的channel
 	ExitBuffChan chan bool
+
+	//无缓冲管道，用于读、写两个goroutine之间的消息通信 // 将信息用字节流的形式传输 用字节去表示
+	msgChan chan []byte
+	// 一个专门负责从客户端读取数据，一个专门负责向客户端写数据
+	// 新增一个管道成员msgChan,作用是用于读写两个go的通信。
 }
 
 // NewConnection 创建连接的方法
@@ -35,6 +41,7 @@ func NewConnection(conn *net.TCPConn, connID uint32, msgHandler ziface.IMsgHandl
 		isClosed:     false,
 		MsgHandler:   msgHandler,
 		ExitBuffChan: make(chan bool, 1), // 这里为什么不用make(chan struct{}, 1)呢？ 因为struct{}{}占用的内存空间为0，而bool占用的内存空间为1 所以为什么不用struct{}{}呢？ 因为struct{}{}不能赋值，而bool可以赋值为true或者false 所以为什么不用bool呢？ 因为bool占用的内存空间为1，而struct{}{}占用的内存空间为0
+		msgChan:      make(chan []byte),  //msgChan初始化
 	}
 
 	return c
@@ -48,11 +55,12 @@ func (c *Connection) StartReader() {
 
 	for {
 
-		// 创建拆包解包的对象 todo 根据协议的不同去创建不同的拆包对象
+		// 1.创建拆包解包的对象 todo 根据协议的不同去创建不同的拆包对象
 		dp := NewDataPack()
 
-		//读取客户端的Msg head
+		//读取客户端的Msg head 长度
 		headData := make([]byte, dp.GetHeadLen())
+		fmt.Println("headData len ", len(headData))
 		if _, err := io.ReadFull(c.GetTCPConnection(), headData); err != nil {
 			fmt.Println("read msg head error ", err) // 如果读取包头出错，直接退出该链接，按理说应该打印日志
 			c.ExitBuffChan <- true
@@ -85,8 +93,13 @@ func (c *Connection) StartReader() {
 			msg:  msg, //将之前的buf 改成 msg
 		}
 
-		//从绑定好的消息和对应的处理方法中执行对应的Handle方法
-		go c.MsgHandler.DoMsgHandler(&req)
+		if utils.GlobalObject.WorkerPoolSize > 0 {
+			//已经启动工作池机制，将消息交给Worker处理
+			c.MsgHandler.SendMsgToTaskQueue(&req)
+		} else {
+			//从绑定好的消息和对应的处理方法中执行对应的Handle方法
+			go c.MsgHandler.DoMsgHandler(&req)
+		}
 
 		// 这里我们在conn读取完客户端数据之后，将数据和conn封装到一个Request中，作为Router的输入数据。
 		//
@@ -99,6 +112,9 @@ func (c *Connection) Start() {
 
 	// 1.开启处理该链接读取到客户端数据之后然后请求业务
 	go c.StartReader()
+
+	//2 开启用于写回客户端数据流程的Goroutine
+	go c.StartWriter()
 
 	for {
 		select {
@@ -148,12 +164,10 @@ func (c *Connection) RemoteAddr() net.Addr {
 
 // SendMsg 直接将Message数据发送数据给远程的TCP客户端
 func (c *Connection) SendMsg(msgId uint32, data []byte) error {
-	// 1.先判断链接是否为空
 	if c.isClosed == true {
 		return errors.New("Connection closed when send msg")
 	}
-
-	// 2.拆包解包的时候，相当于都要创建个对象 将data封包，并且发送
+	//将data封包，并且发送
 	dp := NewDataPack()
 	msg, err := dp.Pack(NewMsgPackage(msgId, data))
 	if err != nil {
@@ -161,13 +175,33 @@ func (c *Connection) SendMsg(msgId uint32, data []byte) error {
 		return errors.New("Pack error msg ")
 	}
 
-	// 3.写回客户端
-	if _, err := c.Conn.Write(msg); err != nil {
-		fmt.Println("Write msg id ", msgId, " error ")
-		// 反正只要涉及到链接的操作，都要判断链接是否关闭，然后出错就要关闭链接
-		c.ExitBuffChan <- true
-		return errors.New("conn Write error")
-	}
+	//写回客户端 要会写数据直接写入消息channel中
+	c.msgChan <- msg //将之前直接回写给conn.Write的方法 改为 发送给Channel 供Writer读取
 
 	return nil
+}
+
+/*
+StartWriter 写消息Goroutine， 用户将数据发送给客户端
+*/
+func (c *Connection) StartWriter() {
+
+	fmt.Println("[Writer Goroutine is running]")
+	defer fmt.Println(c.RemoteAddr().String(), "[conn Writer exit!]")
+
+	// 回写消息的协程需要同时监听数据通道和退出通道 如果有数据就发送，如果有退出就退出
+
+	for {
+		select {
+		case data := <-c.msgChan:
+			//有数据要写给客户端
+			if _, err := c.Conn.Write(data); err != nil {
+				fmt.Println("Send Data error:, ", err, " Conn Writer exit")
+				return
+			}
+		case <-c.ExitBuffChan:
+			//conn已经关闭
+			return
+		}
+	}
 }

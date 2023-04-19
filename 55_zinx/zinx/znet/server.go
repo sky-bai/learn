@@ -2,11 +2,10 @@ package znet
 
 import (
 	"fmt"
-	"github.com/aceld/zinx/znet"
-	"learn/55_zinx/zinx/utils"
 	"net"
 	"time"
 
+	"learn/55_zinx/zinx/utils"
 	"learn/55_zinx/zinx/ziface"
 )
 
@@ -23,6 +22,9 @@ type Server struct {
 func (s *Server) Start() {
 	// TODO
 	go func() {
+		// 1.先启动服务的路由对象的worker工作池
+		s.msgHandler.StartWorkerPool()
+
 		// 1.获取本机服务器地址然后构造对象
 		add, err := net.ResolveTCPAddr(s.IPVersion, fmt.Sprintf("%s:%d", s.IP, s.Port))
 		if err != nil {
@@ -98,12 +100,11 @@ func NewServer() ziface.IServer {
 // AddRouter 路由功能：给当前服务注册一个路由业务方法，供客户端链接处理使用
 func (s *Server) AddRouter(msgId uint32, router ziface.IRouter) {
 	s.msgHandler.AddRouter(msgId, router)
-	fmt.Println("Add Router succ! ")
 }
 
 // PingRouter ping test 自定义路由
 type PingRouter struct {
-	znet.BaseRouter //一定要先基础BaseRouter
+	BaseRouter //一定要先基础BaseRouter
 }
 
 func (p *PingRouter) PreHandle(request ziface.IRequest) {
@@ -135,17 +136,17 @@ func (p *PingRouter) PostHandle(request ziface.IRequest) {
 // 我们需要定一些interface{}来让用户填写任意格式的连接处理业务方法。
 
 // HelloZinxRouter Handle
-type HelloZinxRouter struct {
-	znet.BaseRouter
-}
-
-func (h *HelloZinxRouter) Handle(request ziface.IRequest) {
-	fmt.Println("Call HelloZinxRouter Handle")
-	//先读取客户端的数据，再回写ping...ping...ping
-	fmt.Println("recv from client : msgId=", request.GetMsgID(), ", data=", string(request.GetData()))
-
-	err := request.GetConnection().SendMsg(1, []byte("Hello Zinx Router V0.6"))
-	if err != nil {
-		fmt.Println(err)
-	}
-}
+//type HelloZinxRouter struct {
+//	BaseRouter
+//}
+//
+//func (h *HelloZinxRouter) Handle(request ziface.IRequest) {
+//	fmt.Println("Call HelloZinxRouter Handle")
+//	//先读取客户端的数据，再回写ping...ping...ping
+//	fmt.Println("recv from client : msgId=", request.GetMsgID(), ", data=", string(request.GetData()))
+//
+//	err := request.GetConnection().SendMsg(1, []byte("Hello Zinx Router V0.6"))
+//	if err != nil {
+//		fmt.Println(err)
+//	}
+//}

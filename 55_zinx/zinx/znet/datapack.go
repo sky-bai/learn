@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"learn/55_zinx/zinx/utils"
 	"learn/55_zinx/zinx/ziface"
 )
@@ -41,6 +42,7 @@ func (dp *DataPack) Pack(msg ziface.IMessage) ([]byte, error) {
 	if err := binary.Write(dataBuff, binary.LittleEndian, msg.GetData()); err != nil {
 		return nil, err
 	}
+	fmt.Println("Pack dataBuff", dataBuff)
 
 	return dataBuff.Bytes(), nil
 }
@@ -68,6 +70,7 @@ func (dp *DataPack) Unpack(binaryData []byte) (ziface.IMessage, error) {
 
 	//判断dataLen的长度是否超出我们允许的最大包长度
 	if utils.GlobalObject.MaxPacketSize > 0 && msg.DataLen > utils.GlobalObject.MaxPacketSize {
+		fmt.Println("msg.DataLen", msg.DataLen)
 		return nil, errors.New("Too large msg data recieved")
 	}
 

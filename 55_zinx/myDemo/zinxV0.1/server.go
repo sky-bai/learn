@@ -1,64 +1,26 @@
 package main
 
 import (
-	"fmt"
-	"io"
 	"learn/55_zinx/zinx/znet"
-	"net"
 )
 
-// 只是负责测试datapack拆包，封包功能
+/*
+模拟客户端
+*/
 func main() {
-	//创建socket TCP Server
-	listener, err := net.Listen("tcp", "127.0.0.1:7777")
-	if err != nil {
-		fmt.Println("server listen err:", err)
-		return
-	}
 
-	//创建服务器gotoutine，负责从客户端goroutine读取粘包的数据，然后进行解析
+	/*
+		服务端测试
+	*/
+	//1 创建一个server 句柄 s
+	s := znet.NewServer()
 
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			fmt.Println("server accept err:", err)
-		}
+	s.AddRouter(0, &znet.PingRouter{})
+	//s.AddRouter(1, &znet.HelloZinxRouter{})
+	/*
+		客户端测试
+	*/
 
-		//处理客户端请求
-		go func(conn net.Conn) {
-			//创建封包拆包对象dp
-			dp := znet.NewDataPack()
-			for {
-				// 1.先读出流中的head部分
-				headData := make([]byte, dp.GetHeadLen()) // 根据字段长度读取数据
-				_, err := io.ReadFull(conn, headData)     //ReadFull 会把msg填充满为止
-				if err != nil {
-					fmt.Println("read head error")
-					break
-				}
-				//将headData字节流 拆包到msg中
-				msgHead, err := dp.Unpack(headData)
-				if err != nil {
-					fmt.Println("server unpack err:", err)
-					return
-				}
-
-				if msgHead.GetDataLen() > 0 {
-					//msg 是有data数据的，需要再次读取data数据
-					msg := msgHead.(*znet.Message)
-					msg.Data = make([]byte, msg.GetDataLen())
-
-					// 2.根据dataLen从io中读取字节流
-					_, err := io.ReadFull(conn, msg.Data)
-					if err != nil {
-						fmt.Println("server unpack data err:", err)
-						return
-					}
-
-					fmt.Println("==> Recv Msg: ID=", msg.Id, ", len=", msg.DataLen, ", data=", string(msg.Data))
-				}
-			}
-		}(conn)
-	}
-
+	//2 开启服务
+	s.Serve()
 }
