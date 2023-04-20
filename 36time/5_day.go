@@ -13,4 +13,6 @@ func main() {
 	the_time, _ := time.ParseInLocation("2006-01-02 15:04:05 ", timeParam, loc)
 	fmt.Println("------", the_time)
 
+	fmt.Println("day", time.Now().Day())
+
 }
