@@ -1,5 +1,13 @@
 package main
 
+import "learn/55_zinx/zinx/znet"
+
+func main() {
+	s := znet.Server{Name: "zinx v0.1", IPVersion: "tcp4", IP: ""}
+	s.Serve()
+
+}
+
 import (
 	"learn/55_zinx/zinx/znet"
 )

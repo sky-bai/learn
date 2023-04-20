@@ -17,18 +17,19 @@ type Connection struct {
 
 	//该连接的处理方法api
 	handleAPI ziface.HandFunc
-
+	//该连接的处理方法router
+	Router ziface.IRouter
 	//告知该链接已经退出/停止的channel
 	ExitBuffChan chan bool
 }
 
 // NewConntion 创建连接的方法
-func NewConntion(conn *net.TCPConn, connID uint32, callback_api ziface.HandFunc) *Connection {
+func NewConntion(conn *net.TCPConn, connID uint32, router ziface.IRouter) *Connection {
 	c := &Connection{
 		Conn:         conn,
 		ConnID:       connID,
 		isClosed:     false,
-		handleAPI:    callback_api,
+		Router:       router,
 		ExitBuffChan: make(chan bool, 1),
 	}
 
@@ -47,10 +48,10 @@ func (c *Connection) StartReader() {
 		i++
 		//读取我们最大的数据到buf中
 		buf := make([]byte, 512)
-		cnt, err := c.Conn.Read(buf)
-		if err != nil { // go语言网络编程中 eof 是什么错误，为什么会出现这个错误 ，如何处理
+		_, err := c.Conn.Read(buf)
+		if err != nil {
 			if err == io.EOF {
-				fmt.Println("客户端退出，服务器也退出")
+				fmt.Println("客户端关闭")
 				c.ExitBuffChan <- true
 				return
 			}
@@ -58,13 +59,18 @@ func (c *Connection) StartReader() {
 			c.ExitBuffChan <- true
 			continue
 		}
-		//调用当前链接业务(这里执行的是当前conn的绑定的handle方法)
-		if err := c.handleAPI(c.Conn, buf, cnt); err != nil {
-			fmt.Println("connID ", c.ConnID, " handle is error")
-			c.ExitBuffChan <- true
-			return
+		//得到当前客户端请求的Request数据
+		req := Request{
+			conn: c,
+			data: buf,
 		}
-
+		//从路由Routers 中找到注册绑定Conn的对应Handle
+		go func(request ziface.IRequest) {
+			//执行注册的路由方法
+			c.Router.PreHandle(request)
+			c.Router.Handle(request)
+			c.Router.PostHandle(request)
+		}(&req)
 	}
 }
 

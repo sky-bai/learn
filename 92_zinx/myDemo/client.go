@@ -17,16 +17,13 @@ func main() {
 		fmt.Println("client start err, exit!")
 		return
 	}
-	i := 0
+
 	for {
-		i++
-		fmt.Println("len", len("hahaha"))
-		_, err := conn.Write([]byte("hahaha"))
+		_, err := conn.Write([]byte("Zinx V0.3"))
 		if err != nil {
 			fmt.Println("write error err ", err)
 			return
 		}
-		fmt.Println("i", i)
 
 		buf := make([]byte, 512)
 		cnt, err := conn.Read(buf)
@@ -35,7 +32,7 @@ func main() {
 			return
 		}
 
-		fmt.Printf(" server call back : %s, cnt = %d\n", buf, cnt)
+		fmt.Printf(" server call back : %s, cnt = %d\n", string(buf), cnt)
 
 		time.Sleep(1 * time.Second)
 	}
