@@ -130,7 +130,6 @@ func (c *Connection) Stop() {
 	}
 	c.isClosed = true
 
-	//TODO Connection Stop() 如果用户注册了该链接的关闭回调业务，那么在此刻应该显示调用
 	//==================
 	//如果用户注册了该链接的关闭回调业务，那么在此刻应该显示调用
 	c.TcpServer.CallOnConnStop(c)

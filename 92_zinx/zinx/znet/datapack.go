@@ -8,21 +8,21 @@ import (
 	"learn/92_zinx/zinx/ziface"
 )
 
-// 封包拆包类实例，暂时不需要成员
+// DataPack 封包拆包类实例，暂时不需要成员
 type DataPack struct{}
 
-// 封包拆包实例初始化方法
+// NewDataPack 封包拆包实例初始化方法
 func NewDataPack() *DataPack {
 	return &DataPack{}
 }
 
-// 获取包头长度方法
+// GetHeadLen 获取包头长度方法
 func (dp *DataPack) GetHeadLen() uint32 {
 	//Id uint32(4字节) +  DataLen uint32(4字节)
 	return 8
 }
 
-// 封包方法(压缩数据)
+// Pack 封包方法(压缩数据)
 func (dp *DataPack) Pack(msg ziface.IMessage) ([]byte, error) {
 	//创建一个存放bytes字节的缓冲
 	dataBuff := bytes.NewBuffer([]byte{})
@@ -45,7 +45,7 @@ func (dp *DataPack) Pack(msg ziface.IMessage) ([]byte, error) {
 	return dataBuff.Bytes(), nil
 }
 
-// 拆包方法(解压数据)
+// Unpack 拆包方法(解压数据)
 func (dp *DataPack) Unpack(binaryData []byte) (ziface.IMessage, error) {
 	//创建一个从输入二进制数据的ioReader
 	dataBuff := bytes.NewReader(binaryData)

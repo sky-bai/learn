@@ -144,22 +144,22 @@ func (s *Server) AddRouter(msgId uint32, router ziface.IRouter) {
 	s.msgHandler.AddRouter(msgId, router)
 }
 
-// 得到链接管理
+// GetConnMgr 得到链接管理
 func (s *Server) GetConnMgr() ziface.IConnManager {
 	return s.ConnMgr
 }
 
-// 设置该Server的连接创建时Hook函数
+// SetOnConnStart 设置该Server的连接创建时Hook函数
 func (s *Server) SetOnConnStart(hookFunc func(ziface.IConnection)) {
 	s.OnConnStart = hookFunc
 }
 
-// 设置该Server的连接断开时的Hook函数
+// SetOnConnStop 设置该Server的连接断开时的Hook函数
 func (s *Server) SetOnConnStop(hookFunc func(ziface.IConnection)) {
 	s.OnConnStop = hookFunc
 }
 
-// 调用连接OnConnStart Hook函数
+// CallOnConnStart 调用连接OnConnStart Hook函数
 func (s *Server) CallOnConnStart(conn ziface.IConnection) {
 	if s.OnConnStart != nil {
 		fmt.Println("---> CallOnConnStart....")
@@ -167,10 +167,23 @@ func (s *Server) CallOnConnStart(conn ziface.IConnection) {
 	}
 }
 
-// 调用连接OnConnStop Hook函数
+// CallOnConnStop 调用连接OnConnStop Hook函数
 func (s *Server) CallOnConnStop(conn ziface.IConnection) {
 	if s.OnConnStop != nil {
 		fmt.Println("---> CallOnConnStop....")
 		s.OnConnStop(conn)
 	}
 }
+
+// 要应对海量请求，Go语言的TCP服务器可以采用以下策略：
+//
+//1. 使用goroutine和channel：Go语言中的goroutine和channel可以帮助服务器支持并发处理请求。每个连接可以使用goroutine进行处理，goroutine可以并发处理多个连接，而channel则可以用于协调不同goroutine之间的通信。
+//
+//2. 设置优化参数：Go语言的服务器可以设置一些优化参数，如TCP连接超时时间、TCP发送和接收缓冲区大小等。通过合理地设置这些参数，可以避免服务器由于连接超时或缓冲区不足而导致性能下降。
+// 缓存区一般设置为多大昵 这个tcp连接超时时间是客户端连接超时时间还是服务端连接超时时间昵
+//3. 使用连接池：连接池是一种重用连接的技术。对于TCP服务器来说，连接池可以减少连接处理的时间，提高服务器的吞吐量。在Go语言中，可以使用sync.Pool来实现连接池。
+// 如何实现昵 将链接放入连接池中
+//4. 数据采样和分析：服务器可以采用监控工具如Prometheus和Grafana，通过对网络流量和服务状态的监控，提高服务质量和判断容量上限。
+// 这个该如何实现昵 如何判断是异常连接昵，什么是异常连接昵？
+//5. 开启多个端口：多个端口可以实现客户端请求的负载均衡，降低负载集中风险。
+// 开多个端口为什么能降低负载集中风险昵
