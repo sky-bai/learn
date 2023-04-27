@@ -12,7 +12,7 @@ import (
 //
 // ```go
 
-type TimeWheel struct {
+type TimeWheel1 struct {
 	tick  int64        // 每个tick表示的时间长度
 	slots []*list.List // 每个槽存储的所有元素 每个槽是用数组去表示的 每个槽里面存储的是一个链表 后面是这个数组存的是什么 什么类型的数据
 	index int          // 当前槽的索引值 时间轮的指针
@@ -26,11 +26,23 @@ type TimeWheel struct {
 //
 //```go
 
-func (tw *TimeWheel) AddElement(delay int64, element interface{}) {
+func (tw *TimeWheel1) AddElement(delay int64, element interface{}) {
 	// 多少秒之后执行某个函数 计算任务在哪一个槽位
 
 	// 计算元素应该添加到哪个槽中
 	pos := (tw.index + int(delay/tw.tick)) % len(tw.slots)
+
+	// 1.根据延时时间计算出元素应该存放的槽位
+	// delay / tick  代表的是多少个tick之后执行
+
+	// 2.表示应该存放在那个槽位上
+	// tw.index + int(delay/tw.tick)
+
+	// 3.对24取模
+	// 单层时间轮的设计中槽位数量通常是固定的，并且槽位编号是从0开始连续编号的，因此当槽位编号达到槽位数量时，需要对其进行取模操作，以重新回到槽位编号的初始位置，这个操作通常被称为"循环绕回"。
+	// 值得注意的是，当计算出的槽位编号大于或等于槽位数量时，也需要进行取模操作，以确保计算出的槽位编号在槽位范围之内。
+	// 对于24小时制时间轮，槽位数量通常是24个，因此需要对槽位编号进行24的取模操作，以确保槽位编号的取值在0到23的范围内。这样做可以保证任务都被放入了正确的槽位。
+	// (tw.index + int(delay/tw.tick)) % len(tw.slots)
 
 	// 将元素加入到槽中
 	tw.slots[pos].PushBack(element)
@@ -52,7 +64,7 @@ func (tw *TimeWheel) AddElement(delay int64, element interface{}) {
 //
 //```go
 
-func (tw *TimeWheel) Start(interval time.Duration, callback func(interface{})) {
+func (tw *TimeWheel1) Start(interval time.Duration, callback func(interface{})) {
 	ticker := time.NewTicker(interval)
 	for range ticker.C {
 		// 取出当前槽中的所有元素，并执行相应操作
@@ -61,6 +73,7 @@ func (tw *TimeWheel) Start(interval time.Duration, callback func(interface{})) {
 		}
 		// 将当前槽的索引值加 1，并重新计算
 		tw.index = (tw.index + 1) % len(tw.slots)
+		// 值得注意的是，当计算出的槽位编号大于或等于槽位数量时，也需要进行取模操作，以确保计算出的槽位编号在槽位范围之内。 会出现什么问题？
 	}
 }
 
@@ -71,7 +84,7 @@ func (tw *TimeWheel) Start(interval time.Duration, callback func(interface{})) {
 // ```go
 func main() {
 	// 创建一个时间轮对象，tick 值为 1 秒，共有 60 个槽
-	tw := &TimeWheel{
+	tw := &TimeWheel1{
 		tick:  1,
 		slots: make([]*list.List, 12),
 		index: 0,

@@ -25,4 +25,11 @@ func main() {
 	fmt.Println(j2 / j1) // / 如果是浮点数 就是精度高，显示所有
 	//fmt.Println(j2 % j1)
 
+	// 3.第一个数比第二个数小
+	k1 := 7
+	k2 := 24
+	fmt.Println("k2 / k1", k1/k2) // /求商   不是求余数
+	fmt.Println("k2 % k1", k1%k2) // /求余数
+
+	fmt.Println("3 / 2", 3/2) // /求商   不是求余数
 }
