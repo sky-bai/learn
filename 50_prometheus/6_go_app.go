@@ -9,6 +9,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+// 2.模拟应用程序指标变更
 func recordMetrics() {
 	go func() {
 		for {
@@ -18,6 +19,7 @@ func recordMetrics() {
 	}()
 }
 
+// 1.创建counter类型指标对象
 var (
 	opsProcessed = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "myapp_processed_ops_total",
