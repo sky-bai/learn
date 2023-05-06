@@ -22,30 +22,47 @@ func main() {
 		return
 	}
 	dataBuff := bytes.NewBuffer([]byte{})
-	var da Message
+	//var da Message
+	//
+	//da.Data = []byte("yJEqGqkbHZ<<<#1:862582042075907:1:*,1,GPS,1682329329182,wgs84,40047861:116289569:1682329325182:-782:46:2299:9600:1500:27:0|40047858:116289577:1682329326178:-778:46:2338:9600:1500:27:0|40047855:116289580:1682329327178:-778:46:2414:9600:1500:27:0|40047849:116289576:1682329328178:-778:40:2327:10300:1500:27:0|40047844:116289582:1682329329182:-782:40:2328:10300:1500:27:0,1#")
+	//da.DataLen = uint32(len(da.Data))
+	////写dataLen
+	//if err := binary.Write(dataBuff, binary.LittleEndian, da.DataLen); err != nil {
+	//	fmt.Println("write dataLen error err ", err)
+	//}
+	//
+	////写data数据
+	//if err := binary.Write(dataBuff, binary.LittleEndian, da.Data); err != nil {
+	//	fmt.Println("write dataLen error err ", err)
+	//
+	//}
 
-	da.Data = []byte("yJEqGqkbHZ<<<#1:862582042075907:1:*,1,GPS,1682329329182,wgs84,40047861:116289569:1682329325182:-782:46:2299:9600:1500:27:0|40047858:116289577:1682329326178:-778:46:2338:9600:1500:27:0|40047855:116289580:1682329327178:-778:46:2414:9600:1500:27:0|40047849:116289576:1682329328178:-778:40:2327:10300:1500:27:0|40047844:116289582:1682329329182:-782:40:2328:10300:1500:27:0,1#")
-	da.DataLen = uint32(len(da.Data))
+	var dataXt Message
+
+	dataXt.Data = []byte("NGLGILxwBb<<<#1:869497050200318:1:*,0000027D,XT,true+++,V,170504,100819,00000000,00000000,0000,0000,000000010000,5A,4,000064,100#")
+	dataXt.DataLen = uint32(len(dataXt.Data))
+
 	//写dataLen
-	if err := binary.Write(dataBuff, binary.LittleEndian, da.DataLen); err != nil {
+	if err := binary.Write(dataBuff, binary.LittleEndian, dataXt.DataLen); err != nil {
 		fmt.Println("write dataLen error err ", err)
 	}
 
 	//写data数据
-	if err := binary.Write(dataBuff, binary.LittleEndian, da.Data); err != nil {
+	if err := binary.Write(dataBuff, binary.LittleEndian, dataXt.Data); err != nil {
 		fmt.Println("write dataLen error err ", err)
 
 	}
-	for {
 
-		_, err := conn.Write(dataBuff.Bytes())
-		if err != nil {
-			fmt.Println("write error err ", err)
-			return
-		}
+	//for {
 
-		time.Sleep(1 * time.Second)
+	_, err = conn.Write(dataBuff.Bytes())
+	if err != nil {
+		fmt.Println("write error err ", err)
+		return
 	}
+
+	time.Sleep(1 * time.Second)
+	//}
 }
 
 type Message struct {

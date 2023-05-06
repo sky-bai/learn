@@ -19,4 +19,10 @@ func main() {
 	t := time.Now()
 	formatted := t.Format("200601021504")
 	fmt.Println(formatted)
+
+	// 年月日时分秒
+	// 2021-07-29 15:04:05
+	ymdhis := time.Now().Format("2006-01-02 15:04:05")
+	fmt.Println(ymdhis)
+
 }
