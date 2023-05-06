@@ -30,4 +30,6 @@ func main() {
 	http.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(":2112", nil))
 
+	// test1
+
 }
