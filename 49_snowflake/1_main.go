@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	// 请问这里的入参node 是什么意思？
 
 	// Create a new Node with a Node number of 1
 	node, err := snowflake.NewNode(1)

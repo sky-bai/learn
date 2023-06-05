@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 )
 
 func main() {
@@ -12,10 +11,14 @@ func main() {
 			fmt.Println("err", err)
 		}
 	}()
-	panic("panicli")
-	pan()
+	//panic("panicli")
+	//pan()
+	//
+	//time.Sleep(10 * time.Second)
 
-	time.Sleep(10 * time.Second)
+	fmt.Println("---", 10&253)
+	// 10  1010
+	//     1101
 
 }
 

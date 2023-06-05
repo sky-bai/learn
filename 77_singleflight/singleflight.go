@@ -71,6 +71,7 @@ type call struct {
 type Group struct {
 	mu sync.Mutex       // protects m // 互斥锁，保证并发安全
 	m  map[string]*call // lazily initialized  保存key对应的函数执行过程和结果的变量。  // 存储相同的请求，key是相同的请求，value保存调用信息。
+	// 关于请求和调用函数的map映射表
 }
 
 // Result holds the results of Do, so they can be passed 保存结果
@@ -168,7 +169,8 @@ func (g *Group) DoChan(key string, fn func() (interface{}, error)) <-chan Result
 }
 
 // doCall
-// 这个方法种有个技巧值得学习，使用了两个 defer 巧妙的将 runtime 的错误和我们传入 function 的 panic 区别开来避免了由于传入的 function panic 导致的死锁。
+// 这里使用了两个 defer 巧妙的将 runtime 的错误和我们传入 function 的 panic 区别开来避免了由于传入的 function panic 导致的死锁。
+// 第一个defer在何时使用，第二个defer在何时使用
 
 // doCall handles the single call for a key.
 func (g *Group) doCall(c *call, key string, fn func() (interface{}, error)) { // 对实际执行操作的结果进行处理
@@ -244,6 +246,9 @@ func (g *Group) doCall(c *call, key string, fn func() (interface{}, error)) { //
 	}
 }
 
+// do方法整体逻辑
+// 解决什么样的问题
+
 // Forget tells the singleFlight to forget about a key.  Future calls
 // to Do for this key will call the function rather than waiting for
 // an earlier call to complete.
@@ -253,9 +258,54 @@ func (g *Group) Forget(key string) {
 	g.mu.Unlock()
 }
 
+// Forget方法的作用是让singleFlight加锁操作忘记某个key，这样后续对这个key的请求会重新执行fn函数，而不是等待之前的请求完成。
+
 // 能够在抑制对下游的多次重复请求
 // waitGroup 可以针对不同类型进行管理，这里的singleFlight是通过key进行所有请求的分组管理
 // 处理的窗口期是 也就是说当前周期进行归并的请求和第一个请求开始到结束时间间隔区间来的请求
 // 在那里删除key？ 判断结果的指针是否相同，如果相同才能删除
 // 用go语言的并发编程去解决之前的问题
 // 什么时候会出现channel 死锁？
+
+// 并发编程singleFlight的实现
+
+// 在简历上描写对并发编程的实现可以突出你在Go语言中使用了以下关键技术：WaitGroup、ErrGroup、Singleflight和Sync.Pool。以下是一种可能的描述方式：
+//
+//"在我的学习过程中，我积极探索并发编程的实现，并熟练应用于Go语言。我深入了解了Go语言中的几个关键概念和技术，包括WaitGroup、ErrGroup、Singleflight和Sync.Pool。
+//
+//通过使用WaitGroup，我能够有效地等待一组并发任务的完成，以确保在继续执行之前所有任务都已完成。这使我能够编写高效的并发代码，提高了程序的性能和响应能力。
+//
+//ErrGroup是一个强大的并发控制工具，它允许我同时启动多个并发任务，并能够捕获和处理其中任何一个任务发生的错误。这使我能够更好地管理和监控并发任务的执行状态，并做出相应的处理。
+//
+//SingleFlight是一个有用的并发模式，它在多个并发请求对同一个资源进行访问时，只执行一次实际的请求，并将结果返回给所有的请求方。我成功地利用Singleflight来避免重复的计算和资源浪费，提高了程序的效率。
+//
+//另外，我还深入了解了Sync.Pool，这是一个对象池的实现，用于复用临时对象，减少内存分配和垃圾回收的压力。通过合理地使用Sync.Pool，我能够降低程序的内存开销，并提高程序的性能和稳定性。
+//
+//通过运用这些并发编程技术，我能够编写出高效、可伸缩且线程安全的Go语言程序，提高了系统的并发处理能力和资源利用率。"
+
+// 能再简短一点吗，突出我的能力，不要太多的技术细节
+// 还有atomic原子包的使用 他对应的是那种能力？任何技术的使用场景
+// 需要让别人知道你干了什么 go语言的性能分析该如何做？
+
+// 一定要给别人将清楚
+// 把需要阐述的东西都写出来
+// 玩转github actions
+// 玩转channel 各种使用场景 第三方库的使用场景
+// 性能优化离不开的一些套路：异步、去锁、复用、零拷贝、批量等
+// go语言去锁的一些套路
+// go语言复用的一些套路
+// 对于tcp服务进行指标监控，能统计到那些有用的数据昵？
+
+// 现在我这家公司是物联网公司，我是服务端go语言，设备端是c++，之前双方通信是服务端使用node.js通过tcp协议与设备进行通信，我现在使用go语言重写了node.js的通信模块，并加入了时间轮算法去解决链接的超时问题，第二个是重写整个node.js代码，使其变得可扩展性，
+// 使用prometheus 对服务进行指标检测，指标有连接数，请求耗时。我应该在简历上如何描述昵，简短一点
+
+// 在简历中简洁地描述你在物联网公司中的工作和贡献，可以如下所示：
+//
+//"在物联网公司，作为服务端Go语言工程师，负责与C++设备端进行通信的重要模块。我重写了原先使用Node.js的通信模块，将其改写为高效的Go语言实现，并引入时间轮算法解决了链接超时问题。
+// 此外，我还全面重写了Node.js代码，使其具备出色的可扩展性和灵活性。通过这些改进，提升了通信效率和系统的可靠性，为公司的物联网产品提供了更优质的服务。"
+//
+
+// 现在我有一个tcp的go语言服务，每个连接的Id一般是用什么来表示？为什么要用这个来表示？有什么好处？
+// 熟悉算法与数据结构
+
+// tcp服务解决的问题有什么

@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"io"
+	"learn/55_zinx/zinx/znet"
 	"net"
 	"time"
 )
@@ -12,15 +14,19 @@ import (
 模拟客户端
 */
 
+// lim := syscall.Rlimit{
+//		Cur: math.MaxInt64,
+//		Max: math.MaxInt64,
+//	}
+//	syscall.Setrlimit(syscall.RLIMIT_NOFILE, &lim)
+
+// // go语言客户端 net.Dial 报错 socket: too many open files ,这是因为什么昵
+
 func main() {
 
-	// 开40w的链接
-	for i := 0; i < 300; i++ {
-		Client()
-		fmt.Println("i = ", i)
-	}
+	Client()
 
-	OverClient()
+	//OverClient()
 
 	select {}
 }
@@ -31,8 +37,8 @@ type Message struct {
 }
 
 func Client() {
-
-	conn, err := net.Dial("tcp", "127.0.0.1:7777") // go 语言 net.Dial 报错 socket: too many open files ,这是因为什么昵
+	//
+	conn, err := net.Dial("tcp", "127.0.0.1:3334")
 	if err != nil {
 		fmt.Println("client start err, exit!", err)
 		return
@@ -56,6 +62,7 @@ func Client() {
 	var dataXt Message
 
 	dataXt.Data = []byte("NGLGILxwBb<<<#1:869497050200318:1:*,0000027D,XT,true+++,V,170504,100819,00000000,00000000,0000,0000,000000010000,5A,4,000064,100#")
+	dataXt.Data = []byte("FAhaQQpwfL<<<#1:803278210401627:1:*,1,GPS,1685519752617,wgs84,31089138:121505901:1685519748618:4382:0:4357:5700:496:34:0|31089138:121505901:1685519749616:4384:0:4357:5700:495:34:0|31089138:121505901:1685519750616:4384:28:4357:5700:495:34:0|31089138:121505901:1685519751617:4383:0:4357:5700:496:34:0|31089138:121505901:1685519752617:4383:32:4357:5700:496:34:0,1#")
 	dataXt.DataLen = uint32(len(dataXt.Data))
 
 	//写dataLen
@@ -69,20 +76,44 @@ func Client() {
 
 	}
 
-	go func() {
-		for {
+	for {
+		dp := znet.NewDataPack()
+		_, err = conn.Write(dataBuff.Bytes())
+		if err != nil {
+			fmt.Println("write error err ", err)
+			return
+		}
+		//先读出流中的head部分
+		headData := make([]byte, dp.GetHeadLen())
+		_, err = io.ReadFull(conn, headData) //ReadFull 会把msg填充满为止
+		if err != nil {
+			fmt.Println("read head error")
+			break
+		}
+		//将headData字节流 拆包到msg中
+		msgHead, err := dp.Unpack(headData)
+		if err != nil {
+			fmt.Println("server unpack err:", err)
+			return
+		}
 
-			_, err = conn.Write(dataBuff.Bytes())
+		if msgHead.GetDataLen() > 0 {
+			//msg 是有data数据的，需要再次读取data数据
+			msg := msgHead.(*znet.Message)
+			msg.Data = make([]byte, msg.GetDataLen())
+
+			//根据dataLen从io中读取字节流
+			_, err := io.ReadFull(conn, msg.Data)
 			if err != nil {
-				fmt.Println("write error err ", err)
+				fmt.Println("server unpack data err:", err)
 				return
 			}
 
-			time.Sleep(20 * time.Second)
+			fmt.Println("==> Recv Msg: ID=", msg.Id, ", len=", msg.DataLen, ", data=", string(msg.Data))
 		}
-	}()
 
-	select {}
+		time.Sleep(5 * time.Second)
+	}
 }
 
 func OverClient() {
@@ -106,7 +137,7 @@ func OverClient() {
 	//if err := binary.Write(dataBuff, binary.LittleEndian, da.Data); err != nil {
 	//	fmt.Println("write dataLen error err ", err)
 	//
-	//}
+	//} // 之前第一家有 用的是jb家的suona
 
 	var dataXt Message
 
