@@ -8,17 +8,11 @@ type AnySlice[T int | float64 | string] []T
 // int|float32|float64 这部分被称为类型约束(Type constraint)，中间的 | 的意思是告诉编译器，类型形参 T 只可以接收 int 或 float32 或 float64 这三种类型的实参
 // 中括号里的 T int|float32|float64 这一整串因为定义了所有的类型形参(在这个例子里只有一个类型形参T），所以我们称其为 类型形参列表(type parameter list)
 
-// IntSlice 1. 定义一个任意类型的切片
-type IntSlice []int
-type IntSliceG[T any] []T
+// TSliceG 1. 定义一个任意类型的切片
+type TSliceG[T any] []T
 
-// MyStruct 2.定义一个范型类型的结构体 范型类型写在结构体名字后面
-type MyStruct struct {
-	Name string
-}
-type MyStructG[T int | string] struct {
-	Name T
-}
+// IntAndStringSlice 2.定义一个有类型约束的切片
+type IntAndStringSlice[T int | string] []T
 
 // 部标
 
@@ -39,8 +33,16 @@ type MyChanG[T int | string] chan T
 
 func main() {
 	// 1.实例化切片
-	var int IntSliceG[int] = []int{1, 2, 3}
-	fmt.Println(int)
+	var intArrDemo TSliceG[int] = []int{1, 2, 3}
+	fmt.Println(intArrDemo)
+
+	// 2.实例化int类型的切片
+	var intDemo IntAndStringSlice[int] = []int{1, 2, 3}
+	fmt.Println(intDemo)
+
+	// 3.实例化string类型的切片
+	var stringDemo IntAndStringSlice[string] = []string{"1", "2", "3"}
+	fmt.Println(stringDemo) // 前面写类型 后面写具体类型的值
 
 	// 2.实例化结构体
 	var myStruct MyStruct
