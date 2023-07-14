@@ -9,9 +9,9 @@ import (
 	"sync"
 )
 
-// errGoExit indicates the runtime.GoExit was called in  runtime.GoExit 这个函数是用来干什么的
+// errGoExit indicates the 2_runtime.GoExit was called in  2_runtime.GoExit 这个函数是用来干什么的
 // the user given function.
-var errGoExit = errors.New("runtime.GoExit was called")
+var errGoExit = errors.New("2_runtime.GoExit was called")
 
 func main() {
 	var norm bool
@@ -106,7 +106,7 @@ func (g *Group) Do(key string, fn func() (interface{}, error)) (v interface{}, e
 		// 然后等待 WaitGroup 执行完毕，只要一执行完，所有的 wait 都会被唤醒
 		c.wg.Wait()
 
-		// 这里区分 panic 错误和 runtime 的错误，避免出现死锁，后面可以看到为什么这么做
+		// 这里区分 panic 错误和 2_runtime 的错误，避免出现死锁，后面可以看到为什么这么做
 		if e, ok := c.err.(*panicError); ok { // 如果是
 			// 如果返回的是 panic 错误，为了避免 channel 死锁，我们需要确保这个 panic 无法被恢复
 			panic(e)
@@ -116,7 +116,7 @@ func (g *Group) Do(key string, fn func() (interface{}, error)) (v interface{}, e
 			调用runtime.goExit()将立即终止当前goroutine执行，调度器
 			确保所有已注册defer延迟调度被执行。
 			*/
-			runtime.Goexit() // runtime.GoExit函数在终止调用它的Goroutine的运行之前会先执行该Goroutine中还没有执行的defer语句。
+			runtime.Goexit() // 2_runtime.GoExit函数在终止调用它的Goroutine的运行之前会先执行该Goroutine中还没有执行的defer语句。
 		}
 		return c.val, c.err, true
 	}
@@ -169,7 +169,7 @@ func (g *Group) DoChan(key string, fn func() (interface{}, error)) <-chan Result
 }
 
 // doCall
-// 这里使用了两个 defer 巧妙的将 runtime 的错误和我们传入 function 的 panic 区别开来避免了由于传入的 function panic 导致的死锁。
+// 这里使用了两个 defer 巧妙的将 2_runtime 的错误和我们传入 function 的 panic 区别开来避免了由于传入的 function panic 导致的死锁。
 // 第一个defer在何时使用，第二个defer在何时使用
 
 // doCall handles the single call for a key.
@@ -179,12 +179,12 @@ func (g *Group) doCall(c *call, key string, fn func() (interface{}, error)) { //
 	// 2.函数执行完就删除key
 	normalReturn := false // 标识是否正常返回
 	recovered := false    // 标识别是否发生panic
-	// 第一个 defer 检查 runtime 错误
-	// use double-defer to distinguish panic from runtime.Goexit,
+	// 第一个 defer 检查 2_runtime 错误
+	// use double-defer to distinguish panic from 2_runtime.Goexit,
 	// more details see https://golang.org/cl/134395
 	defer func() { // 抓住本函数错误
 		// 如果既没有正常执行完毕，又没有 recover 那就说明需要直接退出了
-		// the given function invoked runtime.Goexit // 通过这个来判断是否是runtime导致直接退出了
+		// the given function invoked 2_runtime.Goexit // 通过这个来判断是否是runtime导致直接退出了
 		if !normalReturn && !recovered { // 没有正常返回和没有recover住
 			c.err = errGoExit // 返回runtime错误信息
 		}
@@ -223,7 +223,7 @@ func (g *Group) doCall(c *call, key string, fn func() (interface{}, error)) { //
 				// 如果 panic 了我们就 recover 掉，然后 new 一个 panic 的错误
 				// 后面在上层重新 panic
 				// Ideally, we would wait to take a stack trace until we've determined
-				// whether this is a panic or a runtime.Goexit.
+				// whether this is a panic or a 2_runtime.Goexit.
 				//
 				// Unfortunately, the only way we can distinguish the two is to see
 				// whether the recover stopped the goroutine from terminating, and by
@@ -240,7 +240,7 @@ func (g *Group) doCall(c *call, key string, fn func() (interface{}, error)) { //
 		normalReturn = true // 所以可以通过这个变量来判断是否 panic了 如果fn()函数 panic了，那么就不会执行这个赋值操作，就会recover住这个传入函数的error 正常返回修改标识位
 	}()
 	// 如果 normalReturn 为 false 就表示我们的 fn panic 了
-	// 如果执行到了这一步，也说明我们的 fn  recover 住了，不是直接 runtime exit
+	// 如果执行到了这一步，也说明我们的 fn  recover 住了，不是直接 2_runtime exit
 	if !normalReturn {
 		recovered = true // 这里说明没有正常返回，但是recover住了
 	}

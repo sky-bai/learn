@@ -128,7 +128,7 @@ package main
 //
 //		// 每一个redis.Client的连接池容量及闲置连接数量，而不是cluterClient总体的连接池大小。实际上没有总的连接池
 //		// 而是由各个redis.Client自行去实现和维护各自的连接池。
-//		PoolSize:     config.RedisCluster.PoolSize,     // 连接池最大socket连接数，默认为5倍CPU数， 5 * runtime.NumCPU
+//		PoolSize:     config.RedisCluster.PoolSize,     // 连接池最大socket连接数，默认为5倍CPU数， 5 * 2_runtime.NumCPU
 //		MinIdleConns: config.RedisCluster.MinIdleConns, // 在启动阶段创建指定数量的Idle连接，并长期维持idle状态的连接数不少于指定数量；。
 //
 //		// 命令执行失败时的重试策略

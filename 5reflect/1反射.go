@@ -29,4 +29,23 @@ func main() {
 
 	value := reflect.ValueOf(myMap)
 	fmt.Println("valueOf", value)
+
+}
+
+type Person struct {
+	Name   string `json:"name"`
+	Age    int    `json:"age"`
+	Email  string `json:"email,omitempty"`
+	Active bool   `json:"-"`
+}
+
+func demo2() {
+	p := Person{Name: "John", Age: 30, Email: "john@example.com", Active: true}
+
+	t := reflect.TypeOf(p)
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		jsonTag := field.Tag.Get("json")
+		fmt.Printf("Field: %s, JSON Tag: %s\n", field.Name, jsonTag)
+	}
 }

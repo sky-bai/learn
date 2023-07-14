@@ -13,10 +13,13 @@ var (
 	connections = flag.Int("conn", 1, "number of tcp connections")
 )
 
+// 参数 默认值 说明
 // 每一个链接都是一个协程
 
 func main() {
 	flag.Parse()
+	fmt.Println("ip:", ip)
+	fmt.Println("connections:", connections)
 	addr := *ip + ":8972"
 	log.Printf("连接到 %s", addr)
 	var conns []net.Conn
