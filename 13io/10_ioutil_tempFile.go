@@ -58,9 +58,6 @@ func OsCreateTemp() error {
 		return err
 	}
 	defer os.Remove(f.Name()) // clean up
-	// 如果不删除 会在磁盘上生成一个临时文件 但是不会在内存中生成一个临时文件
-	// 临时文件的内容是在内存中的 但是临时文件是在磁盘上的 这样为什么可以避免内存溢出呢？
-	// 内存溢出是因为内存中的数据太多了 但是临时文件是在磁盘上的 所以不会造成内存溢出
 
 	if _, err := f.Write([]byte("content")); err != nil {
 		return err
@@ -71,6 +68,10 @@ func OsCreateTemp() error {
 	}
 	return nil
 }
+
+// 如果不删除 会在磁盘上生成一个临时文件 但是不会在内存中生成一个临时文件
+// 临时文件的内容是在内存中的 但是临时文件是在磁盘上的 这样为什么可以避免内存溢出呢？
+// 内存溢出是因为内存中的数据太多了 但是临时文件是在磁盘上的 所以不会造成内存溢出
 
 // OsCreateTempDirectory 创建临时目录
 func OsCreateTempDirectory() {

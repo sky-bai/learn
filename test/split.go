@@ -1,6 +1,9 @@
-package test
+package main
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 func Split(s, sep string) (result []string) {
 	i := strings.Index(s, sep)
@@ -12,4 +15,16 @@ func Split(s, sep string) (result []string) {
 	}
 	result = append(result, s)
 	return
+}
+
+func main() {
+	ForRange()
+}
+
+func ForRange() {
+	v := []string{"a", "b", "c"}
+	for i := range v {
+		fmt.Println(i)
+
+	}
 }
