@@ -57,3 +57,8 @@ func stopMemProfile(f *os.File) error {
 	}
 	return pprof.WriteHeapProfile(f)
 }
+
+func pp() {
+	p := pprof.Lookup("heap")
+	p.WriteTo(os.Stdout, 2)
+}
