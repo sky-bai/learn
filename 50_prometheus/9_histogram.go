@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
+	dto "github.com/prometheus/client_model/go"
 	"log"
 	"math/rand"
 	"net/http"
 	"time"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -23,9 +26,14 @@ func main() {
 			// 这里搜集一些0-100之间的随机数
 			// 实际应用中，这里可以搜集系统耗时等指标
 			histogram.Observe(rand.Float64() * 100.0)
-			time.Sleep(1 * time.Second)
+			time.Sleep(1 * time.Second) // todo 如何展示99线
 		}
 	}()
+
+	time.Sleep(10 * time.Second)
+	metric := &dto.Metric{}
+	histogram.Write(metric)
+	fmt.Println(proto.MarshalTextString(metric))
 	// 指标上报的路径，可以通过该路径获取实时的监控数据
 	http.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(":2112", nil))

@@ -2,12 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"math"
-	"net/http"
-
 	"github.com/golang/protobuf/proto"
 	dto "github.com/prometheus/client_model/go"
+	"math"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -41,8 +38,5 @@ func main() {
 	metric := &dto.Metric{}
 	temps.Write(metric)
 	fmt.Println(proto.MarshalTextString(metric))
-
-	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(":2112", nil)
 
 }
