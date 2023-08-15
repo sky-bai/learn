@@ -4,7 +4,7 @@ import "fmt"
 
 func main() {
 	i := 2.0
-	j := 5.1
+	j := 5.0
 	w := j / i // 除法
 	//w1 := j % i // 求余数
 	fmt.Println(w)
@@ -32,4 +32,10 @@ func main() {
 	fmt.Println("k2 % k1", k1%k2) // /求余数
 
 	fmt.Println("3 / 2", 3/2) // /求商   不是求余数
+
+	last := 3
+	this := 4
+
+	data := (last - this) / this
+	fmt.Println("data", data)
 }
