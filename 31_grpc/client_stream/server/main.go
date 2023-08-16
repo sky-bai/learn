@@ -8,6 +8,13 @@ import (
 	"net"
 )
 
+// 2.我们需要实现grpc提供的接口
+// 整体逻辑就是 先定义接口 ，然后实现接口，然后注册到grpc中，然后启动grpc服务
+
+// 1.定义proto接口文件
+// 2.实现grpc提供的接口
+// 3.注册到grpc中
+
 // SimpleService 定义我们的服务
 type SimpleService struct {
 	pb.UnimplementedStreamClientServer
@@ -53,12 +60,16 @@ func main() {
 		log.Fatalf("net.Listen err: %v", err)
 	}
 	log.Println(Address + " net.Listing...")
-	// 新建gRPC服务器实例
+
+	// todo 始终有一个server实例，然后将服务注册到server中，然后启动 2.这里可以把server注册到etcd中
+
+	// 1.新建gRPC服务器实例
 	grpcServer := grpc.NewServer()
-	// 在gRPC服务器注册我们的服务
+
+	// 2.在gRPC服务器注册我们的服务 也可以注册到etcd上面
 	pb.RegisterStreamClientServer(grpcServer, &SimpleService{})
 
-	//用服务器 Serve() 方法以及我们的端口信息区实现阻塞等待，直到进程被杀死或者 Stop() 被调用
+	// 3.用服务器 Serve() 方法以及我们的端口信息区实现阻塞等待，直到进程被杀死或者 Stop() 被调用
 	err = grpcServer.Serve(listener)
 	if err != nil {
 		log.Fatalf("grpcServer.Serve err: %v", err)
