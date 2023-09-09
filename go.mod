@@ -136,6 +136,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
+	github.com/rabbitmq/amqp091-go v1.8.1 // indirect
 	github.com/raff/goble v0.0.0-20190909174656-72afc67d6a99 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/richardlehane/mscfb v1.0.4 // indirect
