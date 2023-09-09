@@ -16,11 +16,15 @@ const (
 )
 
 func main() {
+
 	ctx1, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	// 如何验证超时设置昵
 
 	opts := []grpc.DialOption{
 		grpc.WithInsecure(),
 	}
+
+	// 之前是ip加端口
 	// Set up a connection to the server.
 	conn, err := grpc.DialContext(ctx1, address, opts...)
 	if err != nil {
@@ -30,6 +34,7 @@ func main() {
 	defer conn.Close()
 
 	c := pb.NewGreeterClient(conn)
+	// 接口定义的方法
 
 	// Contact the server and print out its response.
 	name := defaultName
@@ -71,6 +76,9 @@ func main() {
 
 // 一元请求/响应模式
 
-// http log 和 grpc log 统一
+// http log 和 grpc log 统一 统一是什么意思
 
 // 服务之间使用链路追踪
+
+// 1.测试超时
+// 2.dial时参数的限制

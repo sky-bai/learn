@@ -2,13 +2,12 @@ package main
 
 import (
 	"io"
-	"io/ioutil"
 	"os"
 )
 
 func Upload(u io.Reader) (err error) {
 	// 创建一个临时文件目录
-	f, err := ioutil.TempFile("", "upload")
+	f, err := os.CreateTemp("", "upload")
 	if err != nil {
 		return
 	}

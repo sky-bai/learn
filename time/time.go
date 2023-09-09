@@ -22,4 +22,21 @@ func main() {
 
 	atomic.StoreInt64(&TickerCount, 1)
 	fmt.Println("", TickerCount)
+
+	timeSub()
+
+	ti, err := time.Parse(time.RFC3339, "2022-12-07T16:00:05.000Z")
+	fmt.Println(ti, err)
+	if ti.Minute() == 0 {
+		fmt.Println("true")
+	}
+	fmt.Println("--- second", ti.Second())
+
+}
+
+func timeSub() {
+	fmt.Println(time.Now().AddDate(0, 0, -1).Sub(time.Now()))
+
+	// 给当前时间减去两小时
+	fmt.Println(time.Now().Add(-2 * time.Hour))
 }

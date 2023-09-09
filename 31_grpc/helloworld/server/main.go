@@ -57,6 +57,9 @@ func main() {
 
 //  以json 输出 带有时间戳
 
+// 在拦截器中 进行日志的打印配置
+// todo 这里记录的是什么日志
+
 func ZapInterceptor() *zap.Logger {
 	w := zapcore.AddSync(&lumberjack.Logger{
 		Filename:  "log/debug.log",
@@ -76,3 +79,8 @@ func ZapInterceptor() *zap.Logger {
 }
 
 // 那按照道理来说 日志都是服务端在打印 设备日志 c++日志 go日志 全部统一搜集
+// http 日志 和 grpc 日志都搜集起来
+
+// 如何替换为etcd
+
+// 相当于之前的dns是将域名转换成ip地址，这里一种转换， 现在服务器是自己配置的了，转换规则由自己定义 etcd 保存
