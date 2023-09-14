@@ -36,7 +36,7 @@ func (s *Server) Start() {
 			panic(err)
 			return
 		}
-		//TODO server.go 应该有一个自动生成ID的方法
+		//TODO 1_server.go 应该有一个自动生成ID的方法
 		var cid uint32
 		cid = 0
 		// 3.阻塞等待客户端连接，处理客户端连接业务

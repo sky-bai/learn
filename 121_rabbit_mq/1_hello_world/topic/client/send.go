@@ -28,14 +28,14 @@ func main() {
 	failOnError(err, "Failed to open a channel")
 	defer ch.Close()
 
-	exchangeName := "test_exchange"
-	routeKey := "test_route_key"
+	exchangeName := "exchange_mode_topic"
+	routeKey := "route_key_topic"
 
 	// 交换机持久化
 	// 队列持久化
 	err = ch.ExchangeDeclare(
 		exchangeName,
-		"direct",
+		"topic",
 		true,
 		false,
 		false,
@@ -61,6 +61,7 @@ func main() {
 		false,     // no-wait
 		nil,       // arguments
 	)
+
 	err = ch.QueueBind(q1.Name, routeKey, exchangeName, false, nil)
 	if err != nil {
 		return
@@ -76,20 +77,18 @@ func main() {
 	defer cancel()
 
 	body := "Hello World!"
-	for i := 0; i < 1000000; i++ {
-		err = ch.PublishWithContext(ctx,
-			exchangeName, // exchange
-			routeKey,     // routing key
-			false,        // mandatory
-			false,        // immediate
-			amqp.Publishing{
-				ContentType: "text/plain",
-				Body:        []byte(body),
-			})
-		failOnError(err, "Failed to publish a message")
-		log.Printf(" [x] Sent %s\n", body)
-		time.Sleep(100 * time.Millisecond)
-	}
+	err = ch.PublishWithContext(ctx,
+		exchangeName, // exchange
+		routeKey,     // routing key
+		false,        // mandatory
+		false,        // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(body),
+		})
+	failOnError(err, "Failed to publish a message")
+	log.Printf(" [x] Sent %s\n", body)
+	time.Sleep(100 * time.Millisecond)
 
 	select {}
 }
