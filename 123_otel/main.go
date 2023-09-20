@@ -1,0 +1,86 @@
+package main
+
+import (
+	"context"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+	"go.opentelemetry.io/otel/sdk/resource"
+	"go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
+	"io"
+	"log"
+	"os"
+	"os/signal"
+)
+
+//回溯一点，跟踪是一种遥测，表示服务正在完成的工作。
+
+// 要在跟踪器中唯一标识你的应用程序，你需要在app.go中创建一个包名常量。
+// name is the Tracer name used to identify this instrumentation library.
+const name = "fib"
+
+func main() {
+	l := log.New(os.Stdout, "", 0)
+
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt)
+
+	errCh := make(chan error)
+	app := NewApp(os.Stdin, l)
+	go func() {
+		errCh <- app.Run(context.Background())
+	}()
+
+	select {
+	case <-sigCh:
+		l.Println("\ngoodbye")
+		return
+	case err := <-errCh:
+		if err != nil {
+			l.Fatal(err)
+		}
+	}
+}
+
+// Fibonacci returns the n-th Fibonacci number.
+func Fibonacci(n uint) (uint64, error) {
+	if n <= 1 {
+		return uint64(n), nil
+	}
+
+	var n2, n1 uint64 = 0, 1
+	for i := uint(2); i < n; i++ {
+		n2, n1 = n1, n1+n2
+	}
+
+	return n2 + n1, nil
+}
+
+// newExporter returns a console exporter.
+func newExporter(w io.Writer) (trace.SpanExporter, error) {
+	return stdouttrace.New(
+		stdouttrace.WithWriter(w),
+		// Use human-readable output.
+		stdouttrace.WithPrettyPrint(),
+		// Do not print timestamps for the demo.
+		stdouttrace.WithoutTimestamps(),
+	)
+}
+
+// OpenTelemetry uses a Resource to represent the entity producing telemetry
+
+// newResource returns a resource describing this application.
+func newResource() *resource.Resource {
+	r, _ := resource.Merge(
+		resource.Default(),
+		resource.NewWithAttributes(
+			semconv.SchemaURL,
+			semconv.ServiceName("fib"),
+			semconv.ServiceVersion("v0.1.0"),
+			attribute.String("environment", "demo"),
+		),
+	)
+	return r
+}
+
+// 这就是使用TracerProvider的地方。它是一个中心点，仪表将从这些示踪器获取遥测数据，并将这些数据导入输出管道。
