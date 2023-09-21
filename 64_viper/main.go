@@ -14,9 +14,9 @@ func main() {
 		fmt.Println("当前port是: ", util.GlobalConfig.GetString("service.mysql.port"))
 		context.JSON(
 			200, gin.H{
-				"host":  util.GlobalConfig.GetString("service.mysql.host"),
-				"port":  util.GlobalConfig.GetString("service.mysql.port"),
-				"redis": util.GlobalConfig.GetString("service.redis.port"),
+				"host":   util.GlobalConfig.GetString("service.mysql.host"),
+				"11port": util.Cfg.Mysql.Port,
+				"redis":  util.GlobalConfig.GetString("service.redis.port"),
 			})
 	})
 	port := util.GlobalConfig.GetString("service.mysql.port")

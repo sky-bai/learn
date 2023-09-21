@@ -96,14 +96,14 @@ func ParserToXt(tcpMsg string) TcpXtMsg {
 //    pos: 4,
 //    parse: (positionType) => {
 //      if (positionType === 'A') {
-//        return config.enums.positionType.gps
+//        return configs.enums.positionType.gps
 //      } else if (positionType === 'V') {
-//        return config.enums.positionType.network
+//        return configs.enums.positionType.network
 //      } else if (positionType === 'D') {
-//        return config.enums.positionType.none_auth
+//        return configs.enums.positionType.none_auth
 //      }
 //
-//      return config.enums.positionType.none_auth
+//      return configs.enums.positionType.none_auth
 //    }
 //  },
 //  {

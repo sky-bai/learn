@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
+	"learn/64_viper/conf"
+	"log"
 )
 
 var GlobalConfig *viper.Viper
@@ -13,19 +15,27 @@ func init() {
 	dynamicConfig()
 }
 
+var Cfg conf.Config
+
 func initConfig() {
 	GlobalConfig = viper.New()
-	GlobalConfig.SetConfigName("base")   // 配置文件名称
-	GlobalConfig.AddConfigPath("config") // 从当前目录的哪个文件开始查找
-	GlobalConfig.SetConfigType("yaml")   // 配置文件的类型
-	err := GlobalConfig.ReadInConfig()   // 读取配置文件
-	if err != nil {                      // 可以按照这种写法，处理特定的找不到配置文件的情况
+	GlobalConfig.SetConfigName("base")    // 配置文件名称
+	GlobalConfig.AddConfigPath("configs") // 从当前目录的哪个文件开始查找
+	GlobalConfig.SetConfigType("yaml")    // 配置文件的类型
+	viper.AutomaticEnv()
+	err := GlobalConfig.ReadInConfig() // 读取配置文件
+	if err != nil {                    // 可以按照这种写法，处理特定的找不到配置文件的情况
 		if v, ok := err.(viper.ConfigFileNotFoundError); ok {
 			fmt.Println(v)
 		} else {
-			panic(fmt.Errorf("read config err:%s\n", err))
+			panic(fmt.Errorf("read configs err:%s\n", err))
 		}
 	}
+
+	if err := viper.Unmarshal(&Cfg); err != nil {
+		log.Printf("unmarshal configs file failed, %v", err)
+	}
+	fmt.Println("---", Cfg.Mysql.Port)
 }
 
 // viper支持应用程序在运行中实时读取配置文件的能力。确保在调用 WatchConfig()之前添加所有的configPaths。

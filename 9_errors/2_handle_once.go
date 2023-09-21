@@ -28,11 +28,11 @@ func WriteAll(w io.Writer, buf []byte) error {
 func WriteConfig(w io.Writer, conf *Config) error {
 	buf, err := json.Marshal(conf)
 	if err != nil {
-		log.Printf("could not marshal config: %v", err)
+		log.Printf("could not marshal configs: %v", err)
 		return err // err后一定要返回
 	}
 	if err := WriteAll(w, buf); err != nil {
-		log.Println("could not write config: %v", err)
+		log.Println("could not write configs: %v", err)
 		return err
 	}
 	return nil
