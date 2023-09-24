@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
 	"io"
+	"learn/123_otel/1_fib"
 	"log"
 	"os"
 	"os/signal"
@@ -20,13 +23,37 @@ import (
 const name = "fib"
 
 func main() {
+
 	l := log.New(os.Stdout, "", 0)
+
+	// Write telemetry data to a file.
+	f, err := os.Create("./123_otel/traces.txt")
+	if err != nil {
+		l.Fatal(err)
+	}
+	defer f.Close()
+
+	exp, err := newExporter(f)
+	if err != nil {
+		l.Fatal(err)
+	}
+
+	tp := trace.NewTracerProvider(
+		trace.WithBatcher(exp),
+		trace.WithResource(newResource()),
+	)
+	defer func() {
+		if err := tp.Shutdown(context.Background()); err != nil {
+			l.Fatal(err)
+		}
+	}()
+	otel.SetTracerProvider(tp)
 
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt)
 
 	errCh := make(chan error)
-	app := NewApp(os.Stdin, l)
+	app := __fib.NewApp(os.Stdin, l)
 	go func() {
 		errCh <- app.Run(context.Background())
 	}()
@@ -47,7 +74,9 @@ func Fibonacci(n uint) (uint64, error) {
 	if n <= 1 {
 		return uint64(n), nil
 	}
-
+	if n > 93 {
+		return 0, fmt.Errorf("unsupported Fibonacci number %d: too large", n)
+	}
 	var n2, n1 uint64 = 0, 1
 	for i := uint(2); i < n; i++ {
 		n2, n1 = n1, n1+n2
