@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/exporters/jaeger"
 	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
 	"io"
-	"learn/123_otel/1_fib"
 	"log"
 	"os"
+
 	"os/signal"
 )
 
@@ -33,15 +34,20 @@ func main() {
 	}
 	defer f.Close()
 
-	exp, err := newExporter(f)
+	//exp, err := newExporter(f)
+	//if err != nil {
+	//	l.Fatal(err)
+	//}
+	//
+	//tp := trace.NewTracerProvider(
+	//	// 设置需要投入的exporter WithBatcher registers the exporter
+	//	trace.WithBatcher(exp),
+	//	trace.WithResource(newResource()),
+	//)
+	tp, err := initTracer("http://127.0.0.1:14268/api/traces")
 	if err != nil {
 		l.Fatal(err)
 	}
-
-	tp := trace.NewTracerProvider(
-		trace.WithBatcher(exp),
-		trace.WithResource(newResource()),
-	)
 	defer func() {
 		if err := tp.Shutdown(context.Background()); err != nil {
 			l.Fatal(err)
@@ -53,7 +59,7 @@ func main() {
 	signal.Notify(sigCh, os.Interrupt)
 
 	errCh := make(chan error)
-	app := __fib.NewApp(os.Stdin, l)
+	app := NewApp(os.Stdin, l)
 	go func() {
 		errCh <- app.Run(context.Background())
 	}()
@@ -94,6 +100,29 @@ func newExporter(w io.Writer) (trace.SpanExporter, error) {
 		// Do not print timestamps for the demo.
 		stdouttrace.WithoutTimestamps(),
 	)
+}
+
+// 设置全局trace
+func initTracer(url string) (*trace.TracerProvider, error) {
+	// 创建 Jaeger exporter
+	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
+	if err != nil {
+		return nil, err
+	}
+	tp := trace.NewTracerProvider(
+		// 将基于父span的采样率设置为100%
+		trace.WithSampler(trace.ParentBased(trace.TraceIDRatioBased(1.0))),
+		// 始终确保在生产中批量处理
+		trace.WithBatcher(exp),
+		// 在资源中记录有关此应用程序的信息
+		trace.WithResource(resource.NewSchemaless(
+			semconv.ServiceNameKey.String("kratos-trace"),
+			attribute.String("exporter", "jaeger"),
+			attribute.Float64("float", 312.23),
+		)),
+	)
+	otel.SetTracerProvider(tp)
+	return tp, nil
 }
 
 // OpenTelemetry uses a Resource to represent the entity producing telemetry

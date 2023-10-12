@@ -32,6 +32,7 @@ require (
 	github.com/klauspost/compress v1.15.11
 	github.com/labstack/gommon v0.4.0
 	github.com/mitchellh/mapstructure v1.5.0
+	github.com/opentracing/opentracing-go v1.1.0
 	github.com/orcaman/concurrent-map/v2 v2.0.1
 	github.com/ouqiang/timewheel v1.0.1
 	github.com/panjf2000/ants/v2 v2.6.0
@@ -55,6 +56,7 @@ require (
 	github.com/tjfoc/gmsm v1.4.1
 	github.com/vmihailenco/msgpack/v5 v5.3.4
 	github.com/xuri/excelize/v2 v2.6.1
+	github.com/yurishkuro/opentracing-tutorial v0.0.0-20221208151422-1923bec92942
 	github.com/zeromicro/go-zero v1.4.3
 	go.mongodb.org/mongo-driver v1.11.1
 	go.opentelemetry.io/otel v1.18.0
@@ -79,6 +81,7 @@ require (
 )
 
 require (
+	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -150,6 +153,8 @@ require (
 	github.com/subosito/gotenv v1.4.1 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
+	github.com/uber/jaeger-client-go v2.30.0+incompatible // indirect
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect

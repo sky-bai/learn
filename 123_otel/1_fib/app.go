@@ -1,4 +1,4 @@
-package __fib
+package main
 
 import (
 	"context"
@@ -8,7 +8,6 @@ import (
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"io"
-	"learn/123_otel/1_fib"
 	"log"
 	"strconv"
 )
@@ -29,7 +28,7 @@ func (a *App) Run(ctx context.Context) error {
 	for {
 
 		// Each execution of the run loop, we should get a new "root" span and context.
-		newCtx, span := otel.Tracer(__fib.name).Start(ctx, "Run")
+		newCtx, span := otel.Tracer(name).Start(ctx, "Run")
 		// 应用入口
 
 		n, err := a.Poll(newCtx)
@@ -47,7 +46,7 @@ func (a *App) Poll(ctx context.Context) (uint, error) {
 
 	// 某一个阶段 某一次处理逻辑
 
-	_, span := otel.Tracer(__fib.name).Start(ctx, "Poll")
+	_, span := otel.Tracer(name).Start(ctx, "Poll")
 	defer span.End()
 	a.l.Print("What Fibonacci number would you like to know: ")
 
@@ -69,13 +68,13 @@ func (a *App) Poll(ctx context.Context) (uint, error) {
 func (a *App) Write(ctx context.Context, n uint) {
 
 	var span trace.Span
-	ctx, span = otel.Tracer(__fib.name).Start(ctx, "Write")
+	ctx, span = otel.Tracer(name).Start(ctx, "Write")
 	defer span.End()
 
 	f, err := func(ctx context.Context) (uint64, error) {
-		_, span := otel.Tracer(__fib.name).Start(ctx, "Fibonacci")
+		_, span := otel.Tracer(name).Start(ctx, "Fibonacci")
 		defer span.End()
-		f, err := __fib.Fibonacci(n)
+		f, err := Fibonacci(n)
 		if err != nil {
 			span.RecordError(err)
 			span.SetStatus(codes.Error, err.Error())
