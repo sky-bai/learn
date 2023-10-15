@@ -1,0 +1,175 @@
+version: "3.5"
+services:
+
+  collector1:
+    image: jaegertracing/jaeger-collector:latest
+    command: [
+      "--kafka.producer.brokers=kafka:9092",
+      "--kafka.producer.topic=jaeger-spans",
+      "--log-level=debug",
+    ]
+    ports:
+      - "14269:14269"
+      - "14268:14268" # can accept spans directly from clients in jaeger.thrift format over binary thrift protocol
+    environment:
+      SPAN_STORAGE_TYPE: "kafka"
+    restart: on-failure
+    depends_on:
+      - kafka
+
+  #  collector2:
+  #    image: jaegertracing/jaeger-collector:1.21
+  #    command: [
+  #      "--kafka.producer.brokers=kafka:9092",
+  #      "--kafka.producer.topic=jaeger-spans",
+  #      "--log-level=debug",
+  #    ]
+  #    ports:
+  #      - 14250 # used by jaeger-agent to send spans in model.proto format
+  #    environment:
+  #      SPAN_STORAGE_TYPE: "kafka"
+  #    restart: on-failure
+  #    depends_on:
+  #      - kafka
+
+  ingester1:
+    image: jaegertracing/jaeger-ingester
+    command: [
+      "--kafka.consumer.brokers=kafka:9092",
+      "--kafka.consumer.topic=jaeger-spans",
+      "--kafka.consumer.group-id=jaeger-ingester",
+      "--es.server-urls=http://elasticsearch:9200",
+      "--span-storage.type=elasticsearch",
+      "--log-level=debug",
+    ]
+    ports:
+      - "14270:14270" # admin port: health check at / and metrics at /metrics
+    environment:
+      SPAN_STORAGE_TYPE: "elasticsearch"
+    restart: on-failure
+    depends_on:
+      - kafka
+      - elasticsearch
+
+  #  ingester2:
+  #    image: jaegertracing/jaeger-ingester:1.21
+  #    command: [
+  #      "--kafka.consumer.brokers=kafka:9092",
+  #      "--kafka.consumer.topic=jaeger-spans",
+  #      "--kafka.consumer.group-id=jaeger-ingester",
+  #      "--es.server-urls=http://0.0.0.0:9200",
+  #      "--span-storage.type=elasticsearch",
+  #      "--log-level=debug",
+  #    ]
+  #    ports:
+  #      - 14270 # admin port: health check at / and metrics at /metrics
+  #    environment:
+  #      SPAN_STORAGE_TYPE: "elasticsearch"
+  #    restart: on-failure
+  #    depends_on:
+  #      - kafka
+  #      - elasticsearch
+
+  jaeger-query:
+    image: jaegertracing/jaeger-query:latest
+    command: [
+      "--es.server-urls=http://elasticsearch:9200",
+      "--span-storage.type=elasticsearch",
+      "--log-level=debug",
+      "--query.max-clock-skew-adjustment=0s",
+    ]
+    ports:
+      - "16686:16686"
+      - "16687:16687"
+    restart: on-failure
+    environment:
+      SPAN_STORAGE_TYPE: "elasticsearch"
+
+      # see here https://github.com/jaegertracing/jaeger/issues/2083#issuecomment-590291890
+      # choose one collector to assign in this.
+      # this used for jaeger query UI to send jaeger-query tracing spans directly to the collector.
+      # or you can leave this empty to disable any tracing
+      JAEGER_DISABLED: "false"
+      JAEGER_ENDPOINT: "http://collector1:14268/api/traces"
+    depends_on:
+      - elasticsearch
+
+  # Using ElasticSearch as a storage for traces and logs
+  # see https://www.elastic.co/guide/en/elasticsearch/reference/7.9/docker.html
+  elasticsearch:
+    #    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.13
+    image: elasticsearch:7.17.13
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    restart: on-failure
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #    volumes:
+  #      - /Users/blj/Downloads/golang/learn/123_otel/7_docker_compose/es/data:/usr/share/elasticsearch/data
+
+  kibana:
+    #    image: docker.elastic.co/kibana/kibana:7.17.13
+    image: kibana:7.17.13
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    #  volumes:
+    #     - /Users/blj/Downloads/skybai/learn/123_otel/7_docker_compose/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    depends_on:
+      - elasticsearch
+
+  zookeeper:
+    image: zookeeper:3.7.0
+    restart: always
+    hostname: zookeeper
+    ports:
+      - "127.0.0.1:2181:2181"
+    volumes:
+      - ./zk/data:/data
+      - ./zk/log:/datalog
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: 1
+      JVMFLAGS: "-Xmx512M -Xms512M"
+    security_opt:
+      - label:disable
+
+  kafka:
+    image: confluentinc/cp-kafka:5.5.0
+    restart: always
+    hostname: kafka
+    ports:
+      - "59092:59092"
+      - "9092:9092"
+    environment:
+      KAFKA_LISTENERS: "LISTENER_DOCKER_INTERNAL://:9092,LISTENER_DOCKER_EXTERNAL://:59092"
+      KAFKA_ADVERTISED_LISTENERS: "LISTENER_DOCKER_INTERNAL://172.18.102.68:9092,LISTENER_DOCKER_EXTERNAL://47.107.47.161:59092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_CREATE_TOPICS: "jaeger-spans:1:1" # topic:partition:replicas
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_HEAP_OPTS: "-Xmx512M -Xms512M"
+    volumes:
+      - ./kafka/data:/var/lib/kafka/data
+    depends_on:
+      - zookeeper
+    security_opt:
+      - label:disable
+
+  kafkaui:
+    restart: always
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "16680:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: kafka
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      JAVA_OPTS: "-Xmx512M -Xms512M"
+    depends_on:
+      - kafka

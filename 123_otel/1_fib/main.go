@@ -44,7 +44,7 @@ func main() {
 	//	trace.WithBatcher(exp),
 	//	trace.WithResource(newResource()),
 	//)
-	tp, err := initTracer("http://127.0.0.1:14268/api/traces")
+	tp, err := initTracer("http://47.107.47.161:14268/api/traces")
 	if err != nil {
 		l.Fatal(err)
 	}
