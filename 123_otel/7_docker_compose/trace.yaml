@@ -13,69 +13,70 @@ services:
       "--log-level=debug",
     ]
     ports:
-      - 14269:14269 # 14269是用于监控健康指标的。
-      - 14268:14268 # can accept spans directly from clients in jaeger.thrift format over binary thrift protocol
+      - "14269:14269" # 14269是用于监控健康指标的。
+      - "14268:14268" # can accept spans directly from clients in jaeger.thrift format over binary thrift protocol
     environment:
       SPAN_STORAGE_TYPE: "kafka"
     restart: on-failure
     depends_on:
       - kafka
 
-#  collector2:
-#    image: jaegertracing/jaeger-collector:1.21
-#    command: [
-#      "--kafka.producer.brokers=kafka:9092",
-#      "--kafka.producer.topic=jaeger-spans",
-#      "--log-level=debug",
-#    ]
-#    ports:
-#      - 14250 # used by jaeger-agent to send spans in model.proto format
-#    environment:
-#      SPAN_STORAGE_TYPE: "kafka"
-#    restart: on-failure
-#    depends_on:
-#      - kafka
+  #  collector2:
+  #    image: jaegertracing/jaeger-collector:1.21
+  #    command: [
+  #      "--kafka.producer.brokers=kafka:9092",
+  #      "--kafka.producer.topic=jaeger-spans",
+  #      "--log-level=debug",
+  #    ]
+  #    ports:
+  #      - 14250 # used by jaeger-agent to send spans in model.proto format
+  #    environment:
+  #      SPAN_STORAGE_TYPE: "kafka"
+  #    restart: on-failure
+  #    depends_on:
+  #      - kafka
 
   ingester1:
-    image: jaegertracing/jaeger-ingester:1.21
+    image: jaegertracing/jaeger-ingester
     command: [
       "--kafka.consumer.brokers=kafka:9092",
       "--kafka.consumer.topic=jaeger-spans",
       "--kafka.consumer.group-id=jaeger-ingester",
+#      "--es.server-urls=http://elasticsearch:9200",
       "--es.server-urls=http://elasticsearch:9200",
       "--span-storage.type=elasticsearch",
       "--log-level=debug",
     ]
     ports:
-      - 14270 # admin port: health check at / and metrics at /metrics
+      - "14270:14270" # admin port: health check at / and metrics at /metrics
     environment:
       SPAN_STORAGE_TYPE: "elasticsearch"
     restart: on-failure
     depends_on:
       - kafka
-      - elasticsearch
-
-#  ingester2:
-#    image: jaegertracing/jaeger-ingester:1.21
-#    command: [
-#      "--kafka.consumer.brokers=kafka:9092",
-#      "--kafka.consumer.topic=jaeger-spans",
-#      "--kafka.consumer.group-id=jaeger-ingester",
-#      "--es.server-urls=http://elasticsearch:9200",
-#      "--span-storage.type=elasticsearch",
-#      "--log-level=debug",
-#    ]
-#    ports:
-#      - 14270 # admin port: health check at / and metrics at /metrics
-#    environment:
-#      SPAN_STORAGE_TYPE: "elasticsearch"
-#    restart: on-failure
-#    depends_on:
-#      - kafka
 #      - elasticsearch
 
+  #  ingester2:
+  #    image: jaegertracing/jaeger-ingester:1.21
+  #    command: [
+  #      "--kafka.consumer.brokers=kafka:9092",
+  #      "--kafka.consumer.topic=jaeger-spans",
+  #      "--kafka.consumer.group-id=jaeger-ingester",
+  #      "--es.server-urls=http://elasticsearch:9200",
+  #      "--span-storage.type=elasticsearch",
+  #      "--log-level=debug",
+  #    ]
+  #    ports:
+  #      - 14270 # admin port: health check at / and metrics at /metrics
+  #    environment:
+  #      SPAN_STORAGE_TYPE: "elasticsearch"
+  #    restart: on-failure
+  #    depends_on:
+  #      - kafka
+  #      - elasticsearch
+
   jaeger-query:
-    image: jaegertracing/jaeger-query:1.21
+    image: jaegertracing/jaeger-query:latest
     command: [
       "--es.server-urls=http://elasticsearch:9200",
       "--span-storage.type=elasticsearch",
@@ -83,8 +84,8 @@ services:
       "--query.max-clock-skew-adjustment=0s",
     ]
     ports:
-      - 16686:16686
-      - 16687:16687
+      - "16686:16686"
+      - "16687:16687"
     restart: on-failure
     environment:
       SPAN_STORAGE_TYPE: "elasticsearch"
@@ -95,54 +96,83 @@ services:
       # or you can leave this empty to disable any tracing
       JAEGER_DISABLED: "false"
       JAEGER_ENDPOINT: "http://collector1:14268/api/traces"
-    depends_on:
-      - elasticsearch
+#    depends_on:
+#      - elasticsearch
 
   # Using ElasticSearch as a storage for traces and logs
   # see https://www.elastic.co/guide/en/elasticsearch/reference/7.9/docker.html
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.13
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.13
+    image: elasticsearch:7.17.13
     ports:
-      - 9200:9200
-      - 9300:9300
+      - "9200:9200"
+      - "9300:9300"
     restart: on-failure
     environment:
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    volumes:
-      - /Users/blj/Downloads/golang/learn/123_otel/7_docker_compose/es/data:/usr/share/elasticsearch/data
+#    volumes:
+#      - /Users/blj/Downloads/golang/learn/123_otel/7_docker_compose/es/data:/usr/share/elasticsearch/data
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.13
+#    image: docker.elastic.co/kibana/kibana:7.17.13
+    image: kibana:7.17.13
     ports:
-      - 5601:5601
+      - "5601:5601"
     environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
+#      ELASTICSEARCH_URL: http://elasticsearch:9200
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     volumes:
-      - /Users/blj/Downloads/golang/learn/123_otel/7_docker_compose/kibana:/usr/share/kibana/config/kibana.yml
+      - /Users/blj/Downloads/skybai/learn/123_otel/7_docker_compose/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
     depends_on:
       - elasticsearch
 
   # Using Apache Kafka as a temporary storage and stream processing system (span post processing)
   zookeeper:
-    image: wurstmeister/zookeeper:3.4.6
+    image: zookeeper
     container_name: zookeeper
     restart: on-failure
     ports:
       - "2181:2181"
 
   kafka:
-    image: wurstmeister/kafka:2.12-2.3.0
+    image: wurstmeister/kafka
     container_name: kafka
     restart: on-failure
     ports:
+      - "59092:59092"
       - "9092:9092"
     environment:
-      # Kafka topic chars limitation https://stackoverflow.com/a/37067544/5489910
-      KAFKA_CREATE_TOPICS: "jaeger-spans:2:1" # topic:partition:replicas
-      KAFKA_ADVERTISED_HOST_NAME: ${MY_IP} # docker-machine ip
-      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_LISTENERS: "LISTENER_DOCKER_INTERNAL://:9092,LISTENER_DOCKER_EXTERNAL://:59092"
+#       这里的docker.for.mac.host.internal是mac的host的ip，如果是linux的话，可以用host.docker.internal
+      KAFKA_ADVERTISED_LISTENERS: "LISTENER_DOCKER_INTERNAL://docker.for.mac.host.internal:9092,LISTENER_DOCKER_EXTERNAL://127.0.0.1:59092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_BROKER_ID: 1
+      # Kafka topic chars limitation https://stackoverflow.com/a/37067544/5489910
+      KAFKA_CREATE_TOPICS: "jaeger-spans:1:1" # topic:partition:replicas
+      KAFKA_HEAP_OPTS: "-Xmx512M -Xms512M"
+    #      KAFKA_ADVERTISED_HOST_NAME: ${MY_IP} # docker-machine ip
+    #      KAFKA_ADVERTISED_PORT: 9092
+    #      KAFKA_LISTENERS=PLAINTEXT: //:9092
+    #      KAFKA_ADVERTISED_LISTENERS=PLAINTEXT: //kafka:9092
+
     depends_on:
       - zookeeper
+
+  kafka-ui:
+    restart: always
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8081:8081"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: prod
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 127.0.0.1:9092
+      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: PLAINTEXT
+      #KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM: SCRAM-SHA-256
+      #KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG: org.apache.kafka.common.security.scram.ScramLoginModule required username="admin" password="JlUIzkmorw8nOnIh";
+      KAFKA_CLUSTERS_0_ZOOKEEPER: 127.0.0.1:2181
+      #KAFKA_CLUSTERS_0_PROPERTIES_USER: admin
+      #KAFKA_CLUSTERS_0_PROPERTIES_PASSWORD: JlUIzkmorw8nOnIh
+      #KAFKA_CLUSTERS_0_PROPERTIES_PROTOCOL: SASL
