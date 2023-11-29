@@ -13,7 +13,9 @@ func main() {
 	topic := "my-topic"
 	partition := 0
 
-	conn, err := kafka.DialLeader(context.Background(), "tcp", "127.0.0.1:59092", topic, partition)
+	// n2002 47.119.157.148
+	// 1.连接集群
+	conn, err := kafka.DialLeader(context.Background(), "tcp", "47.119.157.148:9092", topic, partition)
 	if err != nil {
 		fmt.Println("failed to dial leader:", err)
 		return
