@@ -1,0 +1,8 @@
+grpc_listen: :9090
+run_mode: debug
+db_type: mysql
+db_dsn: channel:cP3siWADopqRKzPj@tcp(47.106.32.154:53306)/channel?charset=utf8mb4&parseTime=True
+redis_addr: 47.106.32.154:56379
+redis_password: Yzz9KKXzdqCrIG3n
+
+

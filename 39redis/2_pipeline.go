@@ -58,3 +58,11 @@ func main() {
 	println("no pip use time:", time.Since(t1).Milliseconds())
 
 }
+
+// 1.找到apiVersion和kubernetesVersion对应的版本关系
+
+// 2.每一个kind类别所能做的事情 什么时候该用这个kind
+
+// 3.最新版本的kubeadm的配置文件
+
+// 4.如何运行起k8s  代码如何debug

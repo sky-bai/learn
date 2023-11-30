@@ -1,0 +1,5 @@
+run_mode: debug
+db_type: mysql
+db_dsn: clue:ZSCZ2Wa0vBwgD4SH@tcp(47.106.32.154:53306)/clue?charset=utf8mb4&parseTime=True
+redis_addr: 47.106.32.154:56379
+redis_password: Yzz9KKXzdqCrIG3n

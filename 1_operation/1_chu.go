@@ -8,8 +8,10 @@ import (
 
 func main() {
 
-	fmt.Println(4 % 2) // 求出余数
+	fmt.Println(5 % 2) // 求出余数
 	fmt.Println(4 / 2) // 求出商
+
+	fmt.Println(2 % 10)
 
 	fmt.Println(1675305202965 / 1000) // 求出商
 

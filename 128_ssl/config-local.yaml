@@ -1,0 +1,40 @@
+http_listen_addr: :8080
+run_mode: debug
+db_type: mysql
+db_dsn: clue:ZSCZ2Wa0vBwgD4SH@tcp(47.106.32.154:53306)/clue?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
+redis_addr: 47.106.32.154:56379
+redis_password: Yzz9KKXzdqCrIG3n
+jwt_key: 012345678912
+login_ttl_sec: 86400
+redis_prefix: 'clue:'
+kafka_topic: clue_test
+kafka_group_id: clue_test_lq1
+kafka_brokers:
+  - 47.106.32.154:59092
+srv_channel_addr: 127.0.0.1:9090
+srv_device_addr: 47.106.32.154:4940
+luosimao_username: api
+luosimao_password: key-83da021fe244d3499fc02a4d97cdd5ac
+luosimao_sign: 【路眼】
+srv_map_addr: 47.106.32.154:4930
+host_url: http://localhost:8080
+srv_wx_user: 47.106.32.154:50055
+skip_clue_check: true
+wx_official_customer: XingCheYunZhuShouSub
+wx_official_app_id: wx9de6950c792ef3af
+wx_official_temp_type: clueNotify4sTemplateid
+#mini_program_app_id: wx02a6a10c76393227
+#mini_program_page_path: pages/clue/detail/index?id=
+no_verify_sms_code: false
+websocket_listen_addr: :8081
+new_clue_count_down: 5
+#except_origins:
+#  - 'https://clue-dev.spreadwin.cn'
+qiniu_ak: 'rrgWyocMc2hZnZKsyKT-3Lmb6rDaeyG7n9KMBbzb'
+qiniu_sk: 'XJh9mUnwNrl2L88M76G7AYKBlY88tj2fHpYgV69Y'
+qiniu_bucket: 'xj-clue-test'
+qiniu_region_id: 'z2'
+qiniu_host_url: 'https://clue-res-test.spreadwin.cn'
+upload_prefix: 'upload/'
+login_retry_cnt: 5
+login_retry_second: 60

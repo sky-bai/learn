@@ -15,13 +15,13 @@ services:
   # 日志收集器
   promtail:
     image: grafana/promtail
-    container_name: lpg-promtail
+    container_name: lpg-promtail.yaml
     volumes:
       # 将需要收集的日志所在目录挂载到promtail容器中
       - /mydata/app/mall-tiny-loki/logs/:/var/log/
-      - /mydata/promtail:/etc/promtail/
+      - /mydata/promtail.yaml:/etc/promtail.yaml/
     # 修改promtail默认配置文件路径
-    command: -config.file=/etc/promtail/promtail.yml
+    command: -config.file=/etc/promtail.yaml/promtail.yaml.yml
 
   # 日志可视化
   grafana:
