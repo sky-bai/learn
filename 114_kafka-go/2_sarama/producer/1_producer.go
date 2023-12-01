@@ -5,6 +5,8 @@ import (
 	"github.com/IBM/sarama"
 )
 
+// 创建一个分区
+
 func main() {
 
 	config := sarama.NewConfig()

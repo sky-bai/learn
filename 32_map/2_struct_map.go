@@ -22,6 +22,14 @@ func main() {
 		fmt.Println(producers)
 	}
 
+	t2 := topicPartition{topic: "test", partition: 1}
+
+	if t1 == t2 {
+		fmt.Println("t1 == t2")
+	} else {
+		fmt.Println("t1 != t2")
+	}
+
 }
 
 // 相同值的结构体在map中的key是一样的

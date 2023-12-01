@@ -22,6 +22,7 @@ func main() {
 		return
 	}
 	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
+
 	_, err = conn.WriteMessages(
 		kafka.Message{Value: []byte("one!")},
 		kafka.Message{Value: []byte("two!")},
@@ -34,4 +35,5 @@ func main() {
 	if err := conn.Close(); err != nil {
 		log.Fatal("failed to close writer:", err)
 	}
+
 }

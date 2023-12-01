@@ -320,8 +320,10 @@ func (consumer *Consumer) handleTxnError(producer sarama.AsyncProducer, message 
 	log.Printf("Message consumer: unable to process transaction: %+v", err)
 	for {
 		if producer.TxnStatus()&sarama.ProducerTxnFlagFatalError != 0 {
+			// 如果两个相应的位都为 1，则结果为 1。
+			// 如果两个相应的位中至少有一个为 0，则结果为 0。
 			// fatal error. need to recreate producer.
-			log.Printf("Message consumer: producer is in a fatal state, need to recreate it")
+			log.Printf("kafka Message consumer: producer is in a fatal state, need to recreate it")
 			// reset current consumer offset to retry consume this record.
 			session.ResetOffset(message.Topic, message.Partition, message.Offset, "")
 			return
