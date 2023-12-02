@@ -9,6 +9,8 @@ import (
 
 func main() {
 
+	// 创建主题通过什么去创建
+
 	config := sarama.NewConfig()
 
 	// 缓冲区大小
@@ -26,14 +28,20 @@ func main() {
 	// 重试次数
 	config.Producer.Retry.Max = 3
 
-	producer, err := sarama.NewAsyncProducer([]string{"47.106.250.122:9092", "47.119.157.148:9092", "47.112.177.81:9092"}, config)
+	//topic := "nil-topic"
+	topic := "two"
+	brokers := []string{"47.106.250.122:9092", "47.119.157.148:9092", "47.112.177.81:9092"}
+
+	producer, err := sarama.NewAsyncProducer(brokers, config)
 	if err != nil {
 		fmt.Println("kafka Failed to start consumer: ", err)
 		return
 	}
 
+	// 如果生产者往一个没有创建的topic里面丢信息会发生什么？
+
 	producer.Input() <- &sarama.ProducerMessage{
-		Topic: "first",
+		Topic: topic,
 		Value: sarama.StringEncoder("test"),
 	}
 
@@ -43,7 +51,11 @@ func main() {
 		return
 	}
 
+	fmt.Println("Down!")
+
 }
+
+// 如何查看kafka的错误日志
 
 // 0:生产者发送过来的数据，不需要等数据罗盘应答
 // 1:生产者发送过来的数据，需要等待leader应答，不需要等待follower应答

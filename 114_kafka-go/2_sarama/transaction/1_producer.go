@@ -240,6 +240,7 @@ type Consumer struct {
 // Setup is run at the beginning of a new session, before ConsumeClaim
 func (consumer *Consumer) Setup(session sarama.ConsumerGroupSession) error {
 	// Mark the consumer as ready
+	// 这里为什么要关闭这个channel
 	close(consumer.ready)
 	return nil
 }

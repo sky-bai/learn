@@ -4,60 +4,26 @@ package main
 import (
 	"context"
 	"errors"
-	"flag"
 	"log"
 	"os"
 	"os/signal"
-	"strings"
 	"sync"
 	"syscall"
 
 	"github.com/IBM/sarama"
 )
 
-// Sarama configuration options
-var (
-	brokers  = ""
-	version  = ""
-	group    = ""
-	topics   = ""
-	assignor = ""
-	oldest   = true
-	verbose  = false
-)
-
-func init() {
-	flag.StringVar(&brokers, "brokers", "", "Kafka bootstrap brokers to connect to, as a comma separated list")
-	flag.StringVar(&group, "group", "", "Kafka consumer group definition")
-	flag.StringVar(&version, "version", sarama.DefaultVersion.String(), "Kafka cluster version")
-	flag.StringVar(&topics, "topics", "", "Kafka topics to be consumed, as a comma separated list")
-	flag.StringVar(&assignor, "assignor", "range", "Consumer group partition assignment strategy (range, roundrobin, sticky)")
-	flag.BoolVar(&oldest, "oldest", true, "Kafka consumer consume initial offset from oldest")
-	flag.BoolVar(&verbose, "verbose", false, "Sarama logging")
-	flag.Parse()
-
-	if len(brokers) == 0 {
-		panic("no Kafka bootstrap brokers defined, please set the -brokers flag")
-	}
-
-	if len(topics) == 0 {
-		panic("no topics given to be consumed, please set the -topics flag")
-	}
-
-	if len(group) == 0 {
-		panic("no Kafka consumer group defined, please set the -group flag")
-	}
-}
+var kafkaBrokers = []string{"47.106.250.122:9092", "47.119.157.148:9092", "47.112.177.81:9092"}
 
 func main() {
 	keepRunning := true
 	log.Println("Starting a new Sarama consumer")
 
-	if verbose {
-		sarama.Logger = log.New(os.Stdout, "[sarama] ", log.LstdFlags)
-	}
+	// todo 这个日志一般是记录什么
+	sarama.Logger = log.New(os.Stdout, "[sarama] ", log.LstdFlags)
 
-	version, err := sarama.ParseKafkaVersion(version)
+	// 指定kafka的版本
+	version, err := sarama.ParseKafkaVersion("3.6.0")
 	if err != nil {
 		log.Panicf("Error parsing Kafka version: %v", err)
 	}
@@ -69,6 +35,8 @@ func main() {
 	config := sarama.NewConfig()
 	config.Version = version
 
+	// 确定消费者组
+	assignor := "sticky"
 	switch assignor {
 	case "sticky":
 		config.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.NewBalanceStrategySticky()}
@@ -80,9 +48,10 @@ func main() {
 		log.Panicf("Unrecognized consumer group partition assignor: %s", assignor)
 	}
 
-	if oldest {
-		config.Consumer.Offsets.Initial = sarama.OffsetOldest
-	}
+	// 指定消费位置
+	config.Consumer.Offsets.Initial = sarama.OffsetNewest
+	// offsetoldset 的话，只要消费者没有提交offset，就会从上次没有提交offset消费的位置开始消费
+	// todo 这里没有搞懂
 
 	/**
 	 * Setup a new Sarama consumer group
@@ -92,7 +61,9 @@ func main() {
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
-	client, err := sarama.NewConsumerGroup(strings.Split(brokers, ","), group, config)
+	// todo 如何指定消费者组ID 是否消费者组只是为了多消费几个主题昵 ？
+	consumerGroupID := "two-group"
+	client, err := sarama.NewConsumerGroup(kafkaBrokers, consumerGroupID, config)
 	if err != nil {
 		log.Panicf("Error creating consumer group client: %v", err)
 	}
@@ -106,7 +77,8 @@ func main() {
 			// `Consume` should be called inside an infinite loop, when a
 			// server-side rebalance happens, the consumer session will need to be
 			// recreated to get the new claims
-			if err := client.Consume(ctx, strings.Split(topics, ","), &consumer); err != nil {
+			topics := "two"
+			if err := client.Consume(ctx, []string{topics}, &consumer); err != nil {
 				if errors.Is(err, sarama.ErrClosedConsumerGroup) {
 					return
 				}
@@ -192,8 +164,11 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 				log.Printf("message channel was closed")
 				return nil
 			}
-			log.Printf("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
+			//log.Printf("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
 			session.MarkMessage(message, "")
+			go func() {
+				log.Printf("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
+			}()
 		// Should return when `session.Context()` is done.
 		// If not, will raise `ErrRebalanceInProgress` or `read tcp <ip>:<port>: i/o timeout` when kafka rebalance. see:
 		// https://github.com/IBM/sarama/issues/1192
