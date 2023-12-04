@@ -15,12 +15,12 @@ func main() {
 
 	// 缓冲区大小
 	// batch.size 只有数据累计到batch.size后，send才会发送给kafka,默认16kb
-	config.Producer.Flush.Bytes = 33554432
+	//config.Producer.Flush.Bytes = 33554432
 	// 批次大小
-	config.Producer.Flush.Messages = 16384
+	//config.Producer.Flush.Messages = 16384
 	// linger.ms
 	// 默认0，表示数据必须立即发送，>0表示数据在linger.ms后send才发送
-	config.Producer.Flush.Frequency = 1
+	//config.Producer.Flush.Frequency = 1
 	// 压缩
 	config.Producer.Compression = sarama.CompressionSnappy
 	// 设置ack 为1 leader和follower都确认
@@ -29,8 +29,8 @@ func main() {
 	config.Producer.Retry.Max = 3
 
 	//topic := "nil-topic"
-	topic := "two"
-	brokers := []string{"47.106.250.122:9092", "47.119.157.148:9092", "47.112.177.81:9092"}
+	topic := "test-z"
+	brokers := []string{"120.76.65.57:9092", "47.119.157.148:9092", "47.106.229.206:9092"}
 
 	producer, err := sarama.NewAsyncProducer(brokers, config)
 	if err != nil {

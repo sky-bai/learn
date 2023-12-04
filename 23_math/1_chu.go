@@ -14,8 +14,8 @@ func main() {
 	fmt.Println(u / 1000)
 
 	// 1.都是整数
-	i1 := 2
-	i2 := 5
+	i1 := 600
+	i2 := 7200
 	fmt.Println("i2 / i1 --->", i2/i1) // /求商   不是求余数
 	fmt.Println("i2 % i1 --->", i2%i1) // 求余数
 
