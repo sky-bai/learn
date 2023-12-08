@@ -30,3 +30,34 @@ func main() {
 	fmt.Println(x1)
 
 }
+
+var key = "cfStat_track_flow_" + "channel" + "20231206"
+var k1 = "cfStat_track_num_" + "channel" + "20231206"
+
+// Incr 是一个简单的累加器
+type Incr struct {
+	keys []string
+
+	keyAndCount map[string]uint64
+}
+
+// NewIncr 创建一个新的 Incr 实例
+func NewIncr(keys []string) *Incr {
+	return &Incr{
+		keys: keys,
+	}
+}
+
+// Incr 对给定的 key 进行累加操作
+func (si *Incr) Incr(key, val uint64) {
+	atomic.AddUint64(&key, val)
+}
+
+// TakeoutToRedis 获取给定 key 的当前累加值并重置为0
+func (si *Incr) TakeoutToRedis(key uint64) uint64 {
+	value := atomic.SwapUint64(&key, 0)
+	// redis.incr(key, value)
+	return value
+}
+
+// 要做到每日更新

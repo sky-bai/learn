@@ -13,7 +13,8 @@ import (
 	"github.com/IBM/sarama"
 )
 
-var kafkaBrokers = []string{"47.106.250.122:9092", "47.119.157.148:9092", "47.112.177.81:9092"}
+var kafkaBrokers = []string{"47.119.157.148:9092"}
+var topics = "test-z"
 
 func main() {
 	keepRunning := true
@@ -77,7 +78,7 @@ func main() {
 			// `Consume` should be called inside an infinite loop, when a
 			// server-side rebalance happens, the consumer session will need to be
 			// recreated to get the new claims
-			topics := "two"
+
 			if err := client.Consume(ctx, []string{topics}, &consumer); err != nil {
 				if errors.Is(err, sarama.ErrClosedConsumerGroup) {
 					return
