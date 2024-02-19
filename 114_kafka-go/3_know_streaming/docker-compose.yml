@@ -23,7 +23,7 @@ services:
       # mysql用户名
       SERVER_MYSQL_USER: root
       # mysql用户密码
-      SERVER_MYSQL_PASSWORD: admin
+      SERVER_MYSQL_PASSWORD: admin2022_
       # es服务地址
       SERVER_ES_ADDRESS: elasticsearch-single:9200
       # 服务JVM参数

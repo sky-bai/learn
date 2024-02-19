@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	topic := "first"
+	topic := "test-z"
 	partition := 0
 
 	// n2002 47.119.157.148

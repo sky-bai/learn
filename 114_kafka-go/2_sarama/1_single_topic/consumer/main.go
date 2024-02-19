@@ -50,7 +50,7 @@ func main() {
 	}
 
 	// 指定消费位置
-	config.Consumer.Offsets.Initial = sarama.OffsetNewest
+	config.Consumer.Offsets.Initial = sarama.OffsetOldest
 	// offsetoldset 的话，只要消费者没有提交offset，就会从上次没有提交offset消费的位置开始消费
 	// todo 这里没有搞懂
 
