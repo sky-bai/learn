@@ -9,14 +9,16 @@ import (
 
 var servers = ""
 var myGroup = ""
+var autoOffsetReset = ""
 
+// 腾讯想要高德新版的要素语义对应表 但是腾讯一直在测试环境，
 func main() {
 
 	// 1.连接
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": servers,
 		"group.id":          myGroup,
-		"auto.offset.reset": "earliest",
+		"auto.offset.reset": autoOffsetReset,
 	})
 
 	if err != nil {

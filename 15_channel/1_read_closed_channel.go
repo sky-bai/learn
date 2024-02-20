@@ -14,6 +14,6 @@ func main() {
 	ch2 <- "s"
 	fmt.Println(<-ch2)
 	fmt.Println(<-ch2)
-	fmt.Println(<-ch2) // 读取未关闭的channel 如果里面还有就取出来 没有了就报错
+	fmt.Println(<-ch2) // 读取未关闭的channel 如果里面还有就取出来 没有就会报错
 	fmt.Println("---")
 }

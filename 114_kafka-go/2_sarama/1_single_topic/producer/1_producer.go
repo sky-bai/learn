@@ -1,13 +1,22 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/IBM/sarama"
+	"log"
+	"sync"
+	"time"
 )
 
 // 创建一个分区
 var kafkaBrokers = []string{"47.119.157.148:9092"}
 var topics = "test-z"
+
+var (
+	wg                                   sync.WaitGroup
+	enqueued, timeout, successes, errors int
+)
 
 func main() {
 
@@ -30,18 +39,41 @@ func main() {
 	// 重试次数
 	config.Producer.Retry.Max = 3
 
+	// 异步生产者不建议把 Errors 和 Successes 都开启，一般开启 Errors 就行
+	// 同步生产者就必须都开启，因为会同步返回发送成功或者失败
+
 	producer, err := sarama.NewAsyncProducer(kafkaBrokers, config)
 	if err != nil {
 		fmt.Println("kafka Failed to start consumer: ", err)
 		return
 	}
 
-	// 如果生产者往一个没有创建的topic里面丢信息会发生什么？
+	// todo 如果生产者往一个没有创建的topic里面丢信息会发生什么？ 会创建一个只有一个分区的topic 但是如何查看这个分区在那一台机器上面昵
+	limit := 10
+	for i := 0; i < limit; i++ {
+		msg := &sarama.ProducerMessage{
+			Topic: topics,
+			Value: sarama.StringEncoder("test"),
+		}
+		fmt.Println("111")
 
-	producer.Input() <- &sarama.ProducerMessage{
-		Topic: topics,
-		Value: sarama.StringEncoder("test"),
+		// 异步发送只是写入内存了就返回了，并没有真正发送出去
+		// sarama 库中用的是一个 channel 来接收，后台 goroutine 异步从该 channel 中取出消息并真正发送
+		// select + ctx 做超时控制,防止阻塞 producer.Input() <- msg 也可能会阻塞
+		ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond*10)
+		select {
+		case producer.Input() <- msg:
+			enqueued++
+		case <-ctx.Done():
+			timeout++
+		}
+		cancel()
+		if i%10000 == 0 && i != 0 {
+			log.Printf("已发送消息数:%d 超时数:%d\n", i, timeout)
+		}
 	}
+
+	// todo 如何查看发送的数据是否问题
 
 	err = producer.Close()
 	if err != nil {
@@ -50,8 +82,15 @@ func main() {
 	}
 
 	fmt.Println("Down!")
+	wg.Wait()
+
+	log.Printf("发送完毕 总发送条数:%d enqueued:%d timeout:%d successes: %d errors: %d\n", limit, enqueued, timeout, successes, errors)
 
 }
+
+// auto.create.topics.enable：是否允许自动创建 Topic 如何查看这个参数 生产环境一般不设置自动
+
+// todo 删除没有用的kafka topic 有什么影响
 
 // 如何查看kafka的错误日志
 

@@ -55,4 +55,5 @@ func main() {
 	}(myCtx)
 
 	select {}
+	// 不能重复监听ctx.Done()，否则会报错
 }

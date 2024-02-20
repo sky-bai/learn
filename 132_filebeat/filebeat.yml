@@ -1,0 +1,16 @@
+filebeat.inputs:
+  - type: log
+    paths:
+      - /usr/share/gather/logs/*.log
+    tail_files: true
+filebeat.registry.flush: 2s
+
+#queue.mem:
+#  events: 20000
+#  flush.min_events: 4096
+#  flush.timeout: 2s
+
+output.logstash:
+  hosts: ["172.18.22.159:5244"]
+  loadbalance: true
+  worker: 1

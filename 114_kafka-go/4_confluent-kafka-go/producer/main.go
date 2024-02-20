@@ -5,9 +5,11 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
 
+var servers = ""
+
 func main() {
 
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost"})
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": servers})
 	if err != nil {
 		panic(err)
 	}
@@ -30,9 +32,10 @@ func main() {
 
 	// Produce messages to topic (asynchronously)
 	topic := "myTopic"
+	Partition := kafka.PartitionAny
 	for _, word := range []string{"Welcome", "to", "the", "Confluent", "Kafka", "Golang", "client"} {
 		p.Produce(&kafka.Message{
-			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: Partition},
 			Value:          []byte(word),
 		}, nil)
 	}

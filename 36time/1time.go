@@ -7,10 +7,14 @@ import (
 
 func main() {
 
-	str := "2022-11-11 11:11:11"
+	//str := "2024-01-06 13:10:30"
+	str1 := ""
 	loc, _ := time.LoadLocation("Local")
-	theTime, _ := time.ParseInLocation("2006-01-02 15:04:05 ", str, loc)
+	theTime, _ := time.ParseInLocation("2006-01-02 15:04:05 ", str1, loc)
 	fmt.Println("parseInLocation", theTime)
+
+	fmt.Println("1111", theTime.UnixNano()/1e6)
+	fmt.Println("1111", theTime.UnixMilli())
 
 	//fmt.Println("11111", now.With(theTime).Year())
 	//currentTime := time.Now()
@@ -22,6 +26,18 @@ func main() {
 
 	fmt.Println("time.now.string", time.Now().String())
 	fmt.Println("time.now.utc", time.Now().UTC().String())
+
+	fmt.Println(time.Now().UnixNano() / 1e6)
+
+	initialTimestamp := time.Unix(0, 0).UnixMilli()
+	fmt.Println("最初的时间戳:", initialTimestamp)
+
+	currentTime := time.Now()
+	fmt.Println("ooo", currentTime)
+
+	// 计算前一分钟的时间戳
+	twoMinuteAgo := currentTime.Add(-time.Minute * 2)
+	fmt.Println("ooo", twoMinuteAgo)
 
 }
 
