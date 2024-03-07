@@ -1,4 +1,4 @@
-package main
+package producer
 
 import (
 	"fmt"
@@ -36,6 +36,8 @@ func main() {
 					// 打印分区，偏移量，错误信息
 				} else {
 					// 处理消息
+					// 2.如果分区挂了怎么办 增加副本需要什么代价 如何消费 ？ 分区什么时候会挂昵 ？
+					fmt.Printf("Delivered message to %v\n", ev.TopicPartition)
 				}
 			}
 		}
@@ -43,7 +45,7 @@ func main() {
 
 	// 指定对应的key和value的序列化类型
 
-	// topic一般如何创建
+	// 3.topic一般如何创建
 	// 3.异步向kafka发送消息
 	topic := "first"
 	Partition := kafka.PartitionAny
@@ -58,8 +60,12 @@ func main() {
 	p.Flush(15 * 1000)
 }
 
+// 如何保证分区可靠性
+
 // 1.需要在运行的时候进行节点的上下线
 // 该节点上的数据先进行迁移
+// 一个分区只能由一个消费者消费
+// 分区数据是有序的 按照订单号进行分区分发 但是容易造成分区数据不均匀
 
 // 2.如何应对lag堆积
 // 5、kafka 消息丢失问题
