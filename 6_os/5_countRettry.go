@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	s, err := ReadFile3("/Users/blj/Downloads/skybai/learn/6os/countRetry.log")
+	s, err := ReadFile3("/Users/blj/Downloads/skybai/learn/6_os/countRetry.log")
 	if err != nil {
 		fmt.Printf("read file error:%v\n", err)
 		return

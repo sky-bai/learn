@@ -12,25 +12,25 @@ import (
 func main() {
 
 	// 1.查看还有什么其他错误
-	//err := ReadFileLeftErrInfo("/Users/blj/Downloads/skybai/learn/6os/error.log-20230422_501", "/Users/blj/Downloads/skybai/learn/6os/leftErr.log")
+	//err := ReadFileLeftErrInfo("/Users/blj/Downloads/skybai/learn/6_os/error.log-20230422_501", "/Users/blj/Downloads/skybai/learn/6_os/leftErr.log")
 	//if err != nil {
 	//	fmt.Printf("read file error:%v\n", err)
 	//	return
 	//}
 
-	//err := ReadFileErrInfo("/Users/blj/Downloads/skybai/learn/6os/error.log-20230422_501")
+	//err := ReadFileErrInfo("/Users/blj/Downloads/skybai/learn/6_os/error.log-20230422_501")
 	//if err != nil {
 	//	fmt.Printf("read file error:%v\n", err)
 	//	return
 	//}
 
-	//s, err := ReadFile3("/Users/blj/Downloads/skybai/learn/6os/test14.log")
+	//s, err := ReadFile3("/Users/blj/Downloads/skybai/learn/6_os/test14.log")
 	//if err != nil {
 	//	fmt.Printf("read file error:%v\n", err)
 	//	return
 	//}
 
-	//s1, err := ReadFileErrWid("/Users/blj/Downloads/skybai/learn/6os/out.txt")
+	//s1, err := ReadFileErrWid("/Users/blj/Downloads/skybai/learn/6_os/out.txt")
 	//if err != nil {
 	//	fmt.Printf("read file error:%v\n", err)
 	//	return
@@ -39,13 +39,13 @@ func main() {
 	//fmt.Println("s1", s1)
 
 	//
-	err := ReadFile3("/Users/blj/Downloads/skybai/learn/6os/log.text")
+	err := ReadFile3("/Users/blj/Downloads/skybai/learn/6_os/log.text")
 	if err != nil {
 		fmt.Printf("read file error:%v\n", err)
 		return
 	}
 
-	//wid2, err := ReadFileErrWid2("/Users/blj/Downloads/skybai/learn/6os/out.txt")
+	//wid2, err := ReadFileErrWid2("/Users/blj/Downloads/skybai/learn/6_os/out.txt")
 	//if err != nil {
 	//	fmt.Printf("read file error:%v\n", err)
 	//	return
@@ -177,7 +177,7 @@ func ReadFileErrWid(path string) (y []string, err error) {
 		fmt.Println("newLine:", newLine)
 
 	}
-	err = os.WriteFile("/Users/blj/Downloads/skybai/learn/6os/test50.log", []byte(newLine), 0666)
+	err = os.WriteFile("/Users/blj/Downloads/skybai/learn/6_os/test50.log", []byte(newLine), 0666)
 	if err != nil {
 		fmt.Println("write file error:", err)
 		return nil, err
@@ -200,7 +200,7 @@ func ReadFileErrWid2(path string) (y []string, err error) {
 	newLine := ""
 	flag := os.O_CREATE | os.O_WRONLY | os.O_APPEND
 	perm := os.FileMode(0666)
-	file, err := os.OpenFile("/Users/blj/Downloads/skybai/learn/6os/test50.log", flag, perm)
+	file, err := os.OpenFile("/Users/blj/Downloads/skybai/learn/6_os/test50.log", flag, perm)
 
 	w := bufio.NewWriter(file)
 

@@ -2,7 +2,7 @@ package __random
 
 import "testing"
 
-// go test -37slice FuzzRandom -fuzztime 10s
+// go test -37_slice FuzzRandom -fuzztime 10s
 var fuz map[string]struct{}
 
 func FuzzRandom(f *testing.F) {
