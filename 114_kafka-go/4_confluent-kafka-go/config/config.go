@@ -1,17 +1,60 @@
 package config
 
-import (
-	"fmt"
-	"github.com/spf13/viper"
+var (
+	GaoDeConfigSetting   = &GaoDeConfig{}
+	TencentConfigSetting = &TencentConfig{}
+
+	TestConfigSetting = &KafkaConfig{}
 )
 
-func main() {
-	viper.SetConfigType("yaml")
-	viper.SetConfigFile("./connect/config.yaml") // 注意:如果使用相对路径，则是以main.go为当前位置与配置文件之间的路径
-	err := viper.ReadInConfig()                  // 查找并读取配置文件
-	if err != nil {                              // 处理读取配置文件的错误
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
-	}
-	mysql := viper.Get("mysql")
-	fmt.Println(mysql)
+type GaoDeConfig struct {
+
+	// 连接配置
+	BootstrapServers string `yaml:"BootstrapServers"`
+	Topic            string `yaml:"Topic"`
+
+	// 发送配置
+	LingerMs                 int    `yaml:"LingerMs"`
+	BatchSize                int    `yaml:"BatchSize"`
+	QueueBuffingMaxKBytes    int    `yaml:"QueueBuffingMaxKBytes"`
+	QueueBufferIngMaxMessage int    `yaml:"QueueBufferIngMaxMessage"`
+	CompressionCodec         string `yaml:"CompressionCodec"`
+	Acks                     string `yaml:"Acks"`
+	Retries                  int    `yaml:"Retries"`
+	RetryBackoffMs           int    `yaml:"RetryBackoffMs"`
 }
+
+type TencentConfig struct {
+	// 连接配置
+	BootstrapServers string `yaml:"BootstrapServers"`
+	Topic            string `yaml:"Topic"`
+
+	// 发送配置
+	LingerMs                 int    `yaml:"LingerMs"`
+	BatchSize                int    `yaml:"BatchSize"`
+	QueueBuffingMaxKBytes    int    `yaml:"QueueBuffingMaxKBytes"`
+	QueueBufferIngMaxMessage int    `yaml:"QueueBufferIngMaxMessage"`
+	CompressionCodec         string `yaml:"CompressionCodec"`
+	Acks                     string `yaml:"Acks"`
+	Retries                  int    `yaml:"Retries"`
+	RetryBackoffMs           int    `yaml:"RetryBackoffMs"`
+}
+
+type KafkaConfig struct {
+	// 连接配置
+	BootstrapServers string `yaml:"BootstrapServers"`
+	Topic            string `yaml:"Topic"`
+
+	// 发送配置
+	LingerMs                 int    `yaml:"LingerMs"`
+	BatchSize                int    `yaml:"BatchSize"`
+	QueueBuffingMaxKBytes    int    `yaml:"QueueBuffingMaxKBytes"`
+	QueueBufferIngMaxMessage int    `yaml:"QueueBufferIngMaxMessage"`
+	CompressionCodec         string `yaml:"CompressionCodec"`
+	Acks                     string `yaml:"Acks"`
+	Retries                  int    `yaml:"Retries"`
+	RetryBackoffMs           int    `yaml:"RetryBackoffMs"`
+}
+
+// batch.size 只有数据积累到batch.size之后才会发送 默认是16k
+// linger.ms 如果数据没有达到batch.size，那么在linger.ms后也会发送 默认是0ms,表示数据立即发送

@@ -16,7 +16,7 @@ const (
 //  },
 
 func main() {
-
+	// --from-beginning
 }
 
 func ParserToGps(tcpMsg string) TcpGpsMsg {

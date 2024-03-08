@@ -1,0 +1,44 @@
+GaoDe:
+  BootstrapServers: 172.18.102.97:9092,172.18.102.202:9092,172.18.102.207:9092
+  Topic: gps-gaoDe
+  LingerMs: 100
+  BatchSize: 100
+  MaxMessageBytes: 1000000
+  MaxRequestSize: 1000000
+  CompressionCodec: snappy
+  Acks: all
+  Retries: 3
+  RetryBackoffMs: 100
+Tencent:
+  BootstrapServers: 172.18.102.97:9092,172.18.102.202:9092,172.18.102.207:9092
+  Topic: gps-Tencent
+  LingerMs: 100
+  BatchSize: 100
+  MaxMessageBytes: 1000000
+  MaxRequestSize: 1000000
+  CompressionCodec: snappy
+  Acks: all
+  Retries: 3
+  RetryBackoffMs: 100
+BaiDu:
+  BootstrapServers: 172.18.102.97:9092,172.18.102.202:9092,172.18.102.207:9092
+  Topic: gps-BaiDu
+  LingerMs: 100
+  BatchSize: 100
+  MaxMessageBytes: 1000000
+  MaxRequestSize: 1000000
+  CompressionCodec: snappy
+  Acks: all
+  Retries: 3
+  RetryBackoffMs: 100
+Test:
+  BootstrapServers: 172.18.102.97:9092,172.18.102.202:9092,172.18.102.207:9092
+  Topic: first
+  LingerMs: 100
+  BatchSize: 33554432
+  QueueBuffingMaxKBytes: 1000000
+  QueueBufferIngMaxMessage: 1000000
+  CompressionCodec: snappy
+  Acks: all
+  Retries: 3
+  RetryBackoffMs: 100
