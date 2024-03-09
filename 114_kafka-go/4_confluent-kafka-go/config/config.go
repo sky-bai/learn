@@ -4,7 +4,7 @@ var (
 	GaoDeConfigSetting   = &GaoDeConfig{}
 	TencentConfigSetting = &TencentConfig{}
 
-	TestConfigSetting = &KafkaConfig{}
+	TestConfigSetting = &TestConfig{}
 )
 
 type GaoDeConfig struct {
@@ -40,10 +40,30 @@ type TencentConfig struct {
 	RetryBackoffMs           int    `yaml:"RetryBackoffMs"`
 }
 
+type (
+	TestConfig struct {
+		// 连接配置
+		BootstrapServers string `yaml:"BootstrapServers"`
+		Topic            string `yaml:"Topic"`
+		Partition        int    `yaml:"Partition"`
+
+		// 发送配置
+		LingerMs                 int    `yaml:"LingerMs"`
+		BatchSize                int    `yaml:"BatchSize"`
+		QueueBuffingMaxKBytes    int    `yaml:"QueueBuffingMaxKBytes"`
+		QueueBufferIngMaxMessage int    `yaml:"QueueBufferIngMaxMessage"`
+		CompressionCodec         string `yaml:"CompressionCodec"`
+		Acks                     string `yaml:"Acks"`
+		Retries                  int    `yaml:"Retries"`
+		RetryBackoffMs           int    `yaml:"RetryBackoffMs"`
+	}
+)
+
 type KafkaConfig struct {
 	// 连接配置
 	BootstrapServers string `yaml:"BootstrapServers"`
 	Topic            string `yaml:"Topic"`
+	Partition        int    `yaml:"Partition"`
 
 	// 发送配置
 	LingerMs                 int    `yaml:"LingerMs"`

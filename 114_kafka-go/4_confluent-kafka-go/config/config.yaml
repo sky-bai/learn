@@ -32,12 +32,12 @@ BaiDu:
   Retries: 3
   RetryBackoffMs: 100
 Test:
-  BootstrapServers: 172.18.102.97:9092,172.18.102.202:9092,172.18.102.207:9092
+  BootstrapServers: 39.108.8.92:9092,120.24.255:9092,47.106.238.172:9092
   Topic: first
-  LingerMs: 100
+  LingerMs: 1
   BatchSize: 33554432
-  QueueBuffingMaxKBytes: 1000000
-  QueueBufferIngMaxMessage: 1000000
+  #  QueueBuffingMaxKBytes: 1000000
+  #  QueueBufferIngMaxMessage: 1000000
   CompressionCodec: snappy
   Acks: all
   Retries: 3
