@@ -1,6 +1,7 @@
 package producer
 
 import (
+	"context"
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"learn/114_kafka-go/4_confluent-kafka-go/config"
 	"log"
@@ -86,7 +87,7 @@ func (k *KafkaProducer) Send(value []byte, fn customPartitioner) error {
 	// 根据规则传入的消息指定发送给对应的topic
 	msg = &kafka.Message{
 		// 按照key的hash code值 对 分区数 求模
-		TopicPartition: kafka.TopicPartition{Topic: &k.topic, Partition: k.partition}, // todo 1.需要指定分区吗？
+		TopicPartition: kafka.TopicPartition{Topic: &k.topic, Partition: k.partition},
 		Value:          value,
 	}
 
@@ -98,6 +99,22 @@ func (k *KafkaProducer) Send(value []byte, fn customPartitioner) error {
 func (k *KafkaProducer) Close() {
 	k.producer.Flush(15 * 1000)
 	k.producer.Close()
+}
+
+func (k *KafkaProducer) InitTransactions(ctx context.Context) error {
+	return k.producer.InitTransactions(ctx)
+}
+
+func (k *KafkaProducer) BeginTransaction() error {
+	return k.producer.BeginTransaction()
+}
+
+func (k *KafkaProducer) CommitTransaction(ctx context.Context) error {
+	return k.producer.CommitTransaction(ctx)
+}
+
+func (k *KafkaProducer) AbortTransaction(ctx context.Context) error {
+	return k.producer.AbortTransaction(ctx)
 }
 
 // 3.不同消息投递不同主题

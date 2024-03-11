@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"learn/114_kafka-go/4_confluent-kafka-go/config"
@@ -84,6 +85,29 @@ func main() {
 
 	// close
 	producer.TestKafkaProducer.Close()
+}
+
+func TransactionUsage() {
+
+	maxDuration, err := time.ParseDuration("10s")
+	if err != nil {
+		log.Fatalf("time.ParseDuration err: %v", err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), maxDuration)
+	defer cancel()
+
+	producer.TestKafkaProducer.InitTransactions(ctx)
+
+	for i := 0; i < 10; i++ {
+		producer.TestKafkaProducer.BeginTransaction()
+		err := producer.TestKafkaProducer.Send([]byte("wxy"), CustomPartition)
+		if err != nil {
+			producer.TestKafkaProducer.AbortTransaction(ctx)
+		}
+	}
+
+	producer.TestKafkaProducer.CommitTransaction(ctx)
+
 }
 
 // kafka概念：
