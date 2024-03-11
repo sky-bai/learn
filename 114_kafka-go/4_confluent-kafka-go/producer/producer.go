@@ -2,6 +2,7 @@ package producer
 
 import (
 	"context"
+	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"learn/114_kafka-go/4_confluent-kafka-go/config"
 	"log"
@@ -21,6 +22,7 @@ var (
 	GaoDeKafkaProducer   *KafkaProducer
 	TencentKafkaProducer *KafkaProducer
 	TestKafkaProducer    *KafkaProducer
+	TransactionProducer  *KafkaProducer
 )
 
 // 幂等性 保证生产的数据不会重复
@@ -37,8 +39,7 @@ type KafkaProducer struct {
 
 func NewKafkaProducer(conf *config.KafkaConfig) *KafkaProducer {
 
-	// 这里server读取配置文件
-	producer, err := kafka.NewProducer(&kafka.ConfigMap{
+	confMap := kafka.ConfigMap{
 		"bootstrap.servers": conf.BootstrapServers, // 其实这里是集群地址 我好像不用关心消息是发完那个机器上面的 只需要关注发给那个topic就行
 
 		//"queue.buffering.max.kbytes":   conf.QueueBuffingMaxKBytes,    // 生产者队列上允许的最大总消息大小总和 batch.size 只有数据累计到batch.size后，send才会发送给kafka,默认16kb
@@ -51,7 +52,17 @@ func NewKafkaProducer(conf *config.KafkaConfig) *KafkaProducer {
 		"acks":              conf.Acks,             // 0 1 all 0 不等待确认 1 等待leader确认 all 等待所有副本确认
 
 		"retries": INT32_MAX,
-	})
+	}
+
+	if conf.TransactionId != "" {
+		fmt.Println("----11-1-1-", conf.TransactionId)
+		confMap["transactional.id"] = fmt.Sprintf("go-transactions-example-p%d", int(1))
+		confMap["client.id"] = fmt.Sprintf("txn-p%d", 1)
+
+	}
+
+	// 这里server读取配置文件
+	producer, err := kafka.NewProducer(&confMap)
 
 	if err != nil {
 		log.Fatalf("Failed to create producer: %s\n", err)
@@ -82,7 +93,9 @@ type customPartitioner func(string) int32
 func (k *KafkaProducer) Send(value []byte, fn customPartitioner) error {
 	var msg *kafka.Message = nil
 
-	k.partition = fn(string(value))
+	if fn != nil {
+		k.partition = fn(string(value))
+	}
 
 	// 根据规则传入的消息指定发送给对应的topic
 	msg = &kafka.Message{

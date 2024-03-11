@@ -31,6 +31,18 @@ func init() {
 		BootstrapServers:         config.TestConfigSetting.BootstrapServers,
 		Topic:                    config.TestConfigSetting.Topic,
 	})
+
+	producer.TransactionProducer = producer.NewKafkaProducer(&config.KafkaConfig{
+		BootstrapServers: config.TransactionSetting.BootstrapServers,
+		Topic:            config.TransactionSetting.Topic,
+		Partition:        config.TransactionSetting.Partition,
+		TransactionId:    config.TransactionSetting.TransactionId,
+		LingerMs:         config.TransactionSetting.LingerMs,
+		BatchSize:        config.TransactionSetting.BatchSize,
+		CompressionCodec: config.TransactionSetting.CompressionCodec,
+		Acks:             config.TransactionSetting.Acks,
+		Retries:          config.TransactionSetting.Retries,
+	})
 }
 
 func setupConfig() error {
@@ -38,12 +50,8 @@ func setupConfig() error {
 	if err != nil {
 		return err
 	}
-	err = setting.ReadSection("GaoDe", &config.GaoDeConfigSetting)
-	if err != nil {
-		return err
-	}
 
-	err = setting.ReadSection("Tencent", &config.TencentConfigSetting)
+	err = setting.ReadSection("Transaction", &config.TransactionSetting)
 	if err != nil {
 		return err
 	}
@@ -53,7 +61,7 @@ func setupConfig() error {
 		return err
 	}
 
-	data, _ := json.Marshal(config.TestConfigSetting)
+	data, _ := json.Marshal(config.TransactionSetting)
 	fmt.Println("----", string(data))
 
 	return nil
@@ -70,11 +78,13 @@ func CustomPartition(value string) (partition int32) {
 }
 
 func main() {
-	for i := 0; i < 50; i++ {
-		producer.TestKafkaProducer.Send([]byte("wxy"), CustomPartition)
-		time.Sleep(1 * time.Second)
-		fmt.Printf("i %d\n", i)
-	}
+	//for i := 0; i < 50; i++ {
+	//	producer.TestKafkaProducer.Send([]byte("wxy"), CustomPartition)
+	//	time.Sleep(1 * time.Second)
+	//	fmt.Printf("i %d\n", i)
+	//}
+
+	TransactionUsage()
 
 	// 等待中断信号
 	quit := make(chan os.Signal)
@@ -84,29 +94,38 @@ func main() {
 	<-quit
 
 	// close
+	producer.TransactionProducer.Close()
 	producer.TestKafkaProducer.Close()
 }
 
 func TransactionUsage() {
 
-	maxDuration, err := time.ParseDuration("10s")
+	maxDuration, err := time.ParseDuration("3s")
 	if err != nil {
 		log.Fatalf("time.ParseDuration err: %v", err)
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), maxDuration)
 	defer cancel()
 
-	producer.TestKafkaProducer.InitTransactions(ctx)
-
-	for i := 0; i < 10; i++ {
-		producer.TestKafkaProducer.BeginTransaction()
-		err := producer.TestKafkaProducer.Send([]byte("wxy"), CustomPartition)
-		if err != nil {
-			producer.TestKafkaProducer.AbortTransaction(ctx)
-		}
+	err = producer.TransactionProducer.InitTransactions(ctx)
+	if err != nil {
+		fmt.Println("errrr:", err)
+		return
 	}
 
-	producer.TestKafkaProducer.CommitTransaction(ctx)
+	for i := 0; i < 10; i++ {
+		producer.TransactionProducer.BeginTransaction()
+		err := producer.TransactionProducer.Send([]byte("wxy"), nil)
+		if err != nil {
+			fmt.Println("err:", err)
+			producer.TransactionProducer.AbortTransaction(ctx)
+			return
+		}
+		time.Sleep(time.Second)
+	}
+
+	producer.TransactionProducer.CommitTransaction(ctx)
+	fmt.Println("done")
 
 }
 

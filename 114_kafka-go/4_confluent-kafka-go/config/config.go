@@ -4,7 +4,8 @@ var (
 	GaoDeConfigSetting   = &GaoDeConfig{}
 	TencentConfigSetting = &TencentConfig{}
 
-	TestConfigSetting = &TestConfig{}
+	TestConfigSetting  = &TestConfig{}
+	TransactionSetting = &TransactionConfig{}
 )
 
 type GaoDeConfig struct {
@@ -57,6 +58,24 @@ type (
 		Retries                  int    `yaml:"Retries"`
 		RetryBackoffMs           int    `yaml:"RetryBackoffMs"`
 	}
+
+	TransactionConfig struct {
+		// 连接配置
+		BootstrapServers string `yaml:"BootstrapServers"`
+		Topic            string `yaml:"Topic"`
+		Partition        int    `yaml:"Partition"`
+		TransactionId    string `yaml:"TransactionId"`
+
+		// 发送配置
+		LingerMs                 int    `yaml:"LingerMs"`
+		BatchSize                int    `yaml:"BatchSize"`
+		QueueBuffingMaxKBytes    int    `yaml:"QueueBuffingMaxKBytes"`
+		QueueBufferIngMaxMessage int    `yaml:"QueueBufferIngMaxMessage"`
+		CompressionCodec         string `yaml:"CompressionCodec"`
+		Acks                     string `yaml:"Acks"`
+		Retries                  int    `yaml:"Retries"`
+		RetryBackoffMs           int    `yaml:"RetryBackoffMs"`
+	}
 )
 
 type KafkaConfig struct {
@@ -64,6 +83,7 @@ type KafkaConfig struct {
 	BootstrapServers string `yaml:"BootstrapServers"`
 	Topic            string `yaml:"Topic"`
 	Partition        int    `yaml:"Partition"`
+	TransactionId    string `yaml:"TransactionId"`
 
 	// 发送配置
 	LingerMs                 int    `yaml:"LingerMs"`
