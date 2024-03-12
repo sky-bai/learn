@@ -79,7 +79,10 @@ func CustomPartition(value string) (partition int32) {
 
 func main() {
 	//for i := 0; i < 50; i++ {
-	//	producer.TestKafkaProducer.Send([]byte("wxy"), CustomPartition)
+	//	err := producer.TestKafkaProducer.Send([]byte("wxy"), CustomPartition)
+	//	if err != nil {
+	//		fmt.Println("Send err:", err)
+	//	}
 	//	time.Sleep(1 * time.Second)
 	//	fmt.Printf("i %d\n", i)
 	//}
@@ -99,8 +102,7 @@ func main() {
 }
 
 func TransactionUsage() {
-
-	maxDuration, err := time.ParseDuration("3s")
+	maxDuration, err := time.ParseDuration("5s")
 	if err != nil {
 		log.Fatalf("time.ParseDuration err: %v", err)
 	}
@@ -109,23 +111,38 @@ func TransactionUsage() {
 
 	err = producer.TransactionProducer.InitTransactions(ctx)
 	if err != nil {
-		fmt.Println("errrr:", err)
+		fmt.Println("InitTransactions err:", err)
 		return
 	}
 
 	for i := 0; i < 10; i++ {
-		producer.TransactionProducer.BeginTransaction()
-		err := producer.TransactionProducer.Send([]byte("wxy"), nil)
+
+		err = producer.TransactionProducer.BeginTransaction()
 		if err != nil {
-			fmt.Println("err:", err)
-			producer.TransactionProducer.AbortTransaction(ctx)
+			fmt.Println("BeginTransaction err:", err)
+			return
+		}
+		err = producer.TransactionProducer.Send([]byte("wxy"), nil)
+		if err != nil {
+			fmt.Println("Send err:", err)
+			producer.TransactionProducer.AbortTransaction(nil)
 			return
 		}
 		time.Sleep(time.Second)
-	}
 
-	producer.TransactionProducer.CommitTransaction(ctx)
-	fmt.Println("done")
+		err = producer.TransactionProducer.CommitTransaction(nil)
+		if err != nil {
+			fmt.Println("CommitTransaction err:", err)
+			err = producer.TransactionProducer.AbortTransaction(nil)
+			if err != nil {
+				fmt.Println("AbortTransaction err:", err)
+			}
+
+			continue
+			return
+		}
+		fmt.Println("done")
+	}
 
 }
 

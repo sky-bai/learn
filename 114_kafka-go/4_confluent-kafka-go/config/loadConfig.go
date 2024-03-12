@@ -20,8 +20,8 @@ func NewConfig() (*Config, error) {
 	//vp.AddConfigPath("configs/")
 	//vp.SetConfigType("yaml")
 
-	//filepath := "/Users/blj/Downloads/skybai/learn/114_kafka-go/4_confluent-kafka-go/config/config.yaml"
-	filepath := "/Users/blj/Downloads/golang/learn/114_kafka-go/4_confluent-kafka-go/config/config.yaml"
+	filepath := "/Users/blj/Downloads/skybai/learn/114_kafka-go/4_confluent-kafka-go/config/config.yaml"
+	//filepath := "/Users/blj/Downloads/golang/learn/114_kafka-go/4_confluent-kafka-go/config/config.yaml"
 
 	vp.SetConfigType("yaml")
 	vp.SetConfigFile(filepath) // 注意:如果使用相对路径，则是以main.go为当前位置与配置文件之间的路径

@@ -50,14 +50,16 @@ func NewKafkaProducer(conf *config.KafkaConfig) *KafkaProducer {
 		"linger.ms":         conf.LingerMs,         // 该值默认为0 来一个消息就发送 修改为5-100ms
 		"compression.codec": conf.CompressionCodec, //  将数据压缩 snappy
 		"acks":              conf.Acks,             // 0 1 all 0 不等待确认 1 等待leader确认 all 等待所有副本确认
+		//"transactional.id":  2,
+		"enable.idempotence": true, // 幂等性
 
 		"retries": INT32_MAX,
 	}
 
 	if conf.TransactionId != "" {
 		fmt.Println("----11-1-1-", conf.TransactionId)
-		confMap["transactional.id"] = fmt.Sprintf("go-transactions-example-p%d", int(1))
-		confMap["client.id"] = fmt.Sprintf("txn-p%d", 1)
+		confMap["transactional.id"] = fmt.Sprintf("go-transactions-example-p%d", 4)
+		confMap["client.id"] = fmt.Sprintf("txn-p%d", 2)
 
 	}
 
