@@ -49,15 +49,16 @@ func NewConfig() (*Config, error) {
 		}
 		// 比对当前MD5与之前是否相同
 		if tconfMD5 == confMD5 {
+			log.Println("Config file changed, but not really changed!")
 			return
 		}
 		// 这说明文件发生了改变.
 		confMD5 = tconfMD5
 
-		//err = vp.Unmarshal(&conf)
-		//if err != nil {
-		//	log.Fatalf("vp.Unmarshal err: %v", err)
-		//}
+		err = vp.Unmarshal(&ChannelKafkaConfig{})
+		if err != nil {
+			log.Fatalf("vp.Unmarshal err: %v", err)
+		}
 
 		log.Println("Config file changed!")
 	})
@@ -65,8 +66,8 @@ func NewConfig() (*Config, error) {
 	return &Config{vp}, nil
 }
 
-func (s *Config) ReadSection(k string, v interface{}) error {
-	err := s.vp.UnmarshalKey(k, v)
+func (s *Config) ReadSection(k interface{}, v ...viper.DecoderConfigOption) error {
+	err := s.vp.Unmarshal(k, v...)
 	if err != nil {
 		return err
 	}

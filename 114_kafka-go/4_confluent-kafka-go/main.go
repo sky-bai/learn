@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"learn/114_kafka-go/4_confluent-kafka-go/config"
+	"learn/114_kafka-go/4_confluent-kafka-go/consumer"
 	"learn/114_kafka-go/4_confluent-kafka-go/producer"
 	"log"
 	"os"
@@ -20,29 +21,32 @@ func init() {
 	}
 
 	producer.TestKafkaProducer = producer.NewKafkaProducer(&config.KafkaConfig{
-		LingerMs:                 config.TestConfigSetting.LingerMs,
-		BatchSize:                config.TestConfigSetting.BatchSize,
-		QueueBuffingMaxKBytes:    config.TestConfigSetting.QueueBuffingMaxKBytes,
-		QueueBufferIngMaxMessage: config.TestConfigSetting.QueueBufferIngMaxMessage,
-		CompressionCodec:         config.TestConfigSetting.CompressionCodec,
-		Acks:                     config.TestConfigSetting.Acks,
-		Retries:                  config.TestConfigSetting.Retries,
-		RetryBackoffMs:           config.TestConfigSetting.RetryBackoffMs,
-		BootstrapServers:         config.TestConfigSetting.BootstrapServers,
-		Topic:                    config.TestConfigSetting.Topic,
+		LingerMs:                 config.ChannelKafkaConfigSetting.Test.LingerMs,
+		BatchSize:                config.ChannelKafkaConfigSetting.Test.BatchSize,
+		QueueBuffingMaxKBytes:    config.ChannelKafkaConfigSetting.Test.QueueBuffingMaxKBytes,
+		QueueBufferIngMaxMessage: config.ChannelKafkaConfigSetting.Test.QueueBufferIngMaxMessage,
+		CompressionCodec:         config.ChannelKafkaConfigSetting.Test.CompressionCodec,
+		Acks:                     config.ChannelKafkaConfigSetting.Test.Acks,
+		Retries:                  config.ChannelKafkaConfigSetting.Test.Retries,
+		RetryBackoffMs:           config.ChannelKafkaConfigSetting.Test.RetryBackoffMs,
+		BootstrapServers:         config.ChannelKafkaConfigSetting.Test.BootstrapServers,
+		Topic:                    config.ChannelKafkaConfigSetting.Test.Topic,
 	})
 
 	producer.TransactionProducer = producer.NewKafkaProducer(&config.KafkaConfig{
-		BootstrapServers: config.TransactionSetting.BootstrapServers,
-		Topic:            config.TransactionSetting.Topic,
-		Partition:        config.TransactionSetting.Partition,
-		TransactionId:    config.TransactionSetting.TransactionId,
-		LingerMs:         config.TransactionSetting.LingerMs,
-		BatchSize:        config.TransactionSetting.BatchSize,
-		CompressionCodec: config.TransactionSetting.CompressionCodec,
-		Acks:             config.TransactionSetting.Acks,
-		Retries:          config.TransactionSetting.Retries,
+		BootstrapServers: config.ChannelKafkaConfigSetting.Transaction.BootstrapServers,
+		Topic:            config.ChannelKafkaConfigSetting.Transaction.Topic,
+		Partition:        config.ChannelKafkaConfigSetting.Transaction.Partition,
+		TransactionId:    config.ChannelKafkaConfigSetting.Transaction.TransactionId,
+		LingerMs:         config.ChannelKafkaConfigSetting.Transaction.LingerMs,
+		BatchSize:        config.ChannelKafkaConfigSetting.Transaction.BatchSize,
+		CompressionCodec: config.ChannelKafkaConfigSetting.Transaction.CompressionCodec,
+		Acks:             config.ChannelKafkaConfigSetting.Transaction.Acks,
+		Retries:          config.ChannelKafkaConfigSetting.Transaction.Retries,
 	})
+
+	consumer.TestKafkaConsumer = consumer.NewKafkaConsumer(&config.KafkaConsumerConfig{Topic: })
+
 }
 
 func setupConfig() error {
@@ -51,17 +55,12 @@ func setupConfig() error {
 		return err
 	}
 
-	err = setting.ReadSection("Transaction", &config.TransactionSetting)
+	err = setting.ReadSection(config.ChannelKafkaConfigSetting)
 	if err != nil {
-		return err
+		log.Fatalf("vp.Unmarshal err: %v", err)
 	}
 
-	err = setting.ReadSection("Test", &config.TestConfigSetting)
-	if err != nil {
-		return err
-	}
-
-	data, _ := json.Marshal(config.TransactionSetting)
+	data, _ := json.Marshal(config.ChannelKafkaConfigSetting)
 	fmt.Println("----", string(data))
 
 	return nil
@@ -87,7 +86,7 @@ func main() {
 	//	fmt.Printf("i %d\n", i)
 	//}
 
-	TransactionUsage()
+	//TransactionUsage()
 
 	// 等待中断信号
 	quit := make(chan os.Signal)
@@ -97,12 +96,12 @@ func main() {
 	<-quit
 
 	// close
-	producer.TransactionProducer.Close()
-	producer.TestKafkaProducer.Close()
+	//producer.TransactionProducer.Close()
+	//producer.TestKafkaProducer.Close()
 }
 
 func TransactionUsage() {
-	maxDuration, err := time.ParseDuration("5s")
+	maxDuration, err := time.ParseDuration("15s")
 	if err != nil {
 		log.Fatalf("time.ParseDuration err: %v", err)
 	}
