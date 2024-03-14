@@ -1,11 +1,6 @@
 package config
 
 var (
-	GaoDeConfigSetting   = &GaoDeConfig{}
-	TencentConfigSetting = &TencentConfig{}
-
-	TestConfigSetting         = &TestConfig{}
-	TransactionSetting        = &TransactionConfig{}
 	ChannelKafkaConfigSetting = &ChannelKafkaConfig{}
 )
 
@@ -15,6 +10,8 @@ type (
 		Tencent     TencentConfig     `yaml:"Tencent"`
 		Test        TestConfig        `yaml:"Test"`
 		Transaction TransactionConfig `yaml:"Transaction"`
+
+		Consumer KafkaConsumerConfig `yaml:"Consumer"`
 	}
 
 	GaoDeConfig struct {
@@ -110,6 +107,11 @@ type KafkaConfig struct {
 // 多文件进行读取
 
 type KafkaConsumerConfig struct {
-	Topic   []string `yaml:"Topic"`
-	GroupId int      `yaml:"GroupId"`
+	// 连接配置
+	BootstrapServers string `yaml:"BootstrapServers"`
+
+	// 消费配置
+	Topic           []string `yaml:"Topic"`
+	GroupId         string   `yaml:"GroupId"`
+	AutoOffsetReset string   `yaml:"AutoOffsetReset"`
 }

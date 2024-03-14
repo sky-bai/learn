@@ -14,7 +14,7 @@ var ()
 
 // 开6个分区
 
-func main() {
+func test() {
 	group := 1
 
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{

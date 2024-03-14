@@ -2,13 +2,8 @@ package consumer
 
 import (
 	"fmt"
-	"learn/114_kafka-go/4_confluent-kafka-go/config"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
-
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
+	"learn/114_kafka-go/4_confluent-kafka-go/config"
 )
 
 var (
@@ -19,31 +14,18 @@ var (
 // 什么时候会从一个分区扩大到多个分区 分区数只能增加不能减少 为什么不能减少昵
 // 需要指定消费位置
 // 一台机器有topic的多个分区 不同机器存储分区的副本
-func main() {
-
-	consumer.Consumer(HandlerTest)
-
-	// 等待中断信号
-	quit := make(chan os.Signal)
-
-	// 接受 syscall.SIGINT 和 syscall.SIGTERM 信号
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-
-	consumer.Close()
-
-}
 
 type KafkaConsumer struct {
 	consumer *kafka.Consumer
+	topic    []string
 	groupId  string
 }
 
 func NewKafkaConsumer(conf *config.KafkaConsumerConfig) *KafkaConsumer {
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": servers,
+		"bootstrap.servers": conf.BootstrapServers,
 		"group.id":          conf.GroupId,
-		"auto.offset.reset": autoOffsetReset,
+		"auto.offset.reset": conf.AutoOffsetReset,
 	})
 
 	if err != nil {
@@ -55,33 +37,39 @@ func NewKafkaConsumer(conf *config.KafkaConsumerConfig) *KafkaConsumer {
 		panic(fmt.Errorf("consumer:%s,group:%d,err:%v", "topic", conf.GroupId, err))
 	}
 
-	// A signal handler or similar could be used to set this to false to break the loop.
-	run := true
+	//// A signal handler or similar could be used to set this to false to break the loop.
+	//run := true
 
-	// 3.读取
-	for run {
-		msg, err := c.ReadMessage(time.Second)
-		if err == nil {
-			// 处理结果
-			fmt.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
-		} else if !err.(kafka.Error).IsTimeout() {
-			// The client will automatically try to recover from all errors.
-			// Timeout is not considered an error because it is raised by
-			// ReadMessage in absence of messages.
-			fmt.Printf("Consumer error: %v (%v)\n", err, msg)
-		}
+	//// 3.读取
+	//for run {
+	//	msg, err := c.ReadMessage(time.Second)
+	//	if err == nil {
+	//		// 处理结果
+	//		fmt.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
+	//	} else if !err.(kafka.Error).IsTimeout() {
+	//		// The client will automatically try to recover from all errors.
+	//		// Timeout is not considered an error because it is raised by
+	//		// ReadMessage in absence of messages.
+	//		fmt.Printf("Consumer error: %v (%v)\n", err, msg)
+	//	}
+	//}
+
+	return &KafkaConsumer{
+		consumer: c,
+		groupId:  conf.GroupId,
+		topic:    conf.Topic,
 	}
 
 }
 
-func (k *KafkaConsumer) Consumer(fn func([]byte)) {
+func (k *KafkaConsumer) Consumer(fn func(*kafka.Message)) {
 	// 3.读取
 	for {
 		msg, err := k.consumer.ReadMessage(-1)
 		if err == nil {
 			// 处理结果
-			fmt.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
-			fn(msg.Value)
+			//fmt.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
+			fn(msg)
 		} else if !err.(kafka.Error).IsTimeout() {
 			// The client will automatically try to recover from all errors.
 			// Timeout is not considered an error because it is raised by
@@ -95,8 +83,8 @@ func (k *KafkaConsumer) Close() {
 	k.consumer.Close()
 }
 
-func HandlerTest(msg []byte) {
-	fmt.Println("handler msg:", string(msg))
+func HandlerTest(msg *kafka.Message) {
+	fmt.Printf("Message on Topic:%s,Partition:%d,Offset:%d,Value:%s\n", *msg.TopicPartition.Topic, msg.TopicPartition.Partition, msg.TopicPartition.Offset, string(msg.Value))
 }
 
 func Demo() {

@@ -20,6 +20,18 @@ func init() {
 		log.Fatalf("init.setupSetting err: %v", err)
 	}
 
+	//producer.TransactionProducer = producer.NewKafkaProducer(&config.KafkaConfig{
+	//	BootstrapServers: config.ChannelKafkaConfigSetting.Transaction.BootstrapServers,
+	//	Topic:            config.ChannelKafkaConfigSetting.Transaction.Topic,
+	//	Partition:        config.ChannelKafkaConfigSetting.Transaction.Partition,
+	//	TransactionId:    config.ChannelKafkaConfigSetting.Transaction.TransactionId,
+	//	LingerMs:         config.ChannelKafkaConfigSetting.Transaction.LingerMs,
+	//	BatchSize:        config.ChannelKafkaConfigSetting.Transaction.BatchSize,
+	//	CompressionCodec: config.ChannelKafkaConfigSetting.Transaction.CompressionCodec,
+	//	Acks:             config.ChannelKafkaConfigSetting.Transaction.Acks,
+	//	Retries:          config.ChannelKafkaConfigSetting.Transaction.Retries,
+	//})
+
 	producer.TestKafkaProducer = producer.NewKafkaProducer(&config.KafkaConfig{
 		LingerMs:                 config.ChannelKafkaConfigSetting.Test.LingerMs,
 		BatchSize:                config.ChannelKafkaConfigSetting.Test.BatchSize,
@@ -33,19 +45,12 @@ func init() {
 		Topic:                    config.ChannelKafkaConfigSetting.Test.Topic,
 	})
 
-	producer.TransactionProducer = producer.NewKafkaProducer(&config.KafkaConfig{
-		BootstrapServers: config.ChannelKafkaConfigSetting.Transaction.BootstrapServers,
-		Topic:            config.ChannelKafkaConfigSetting.Transaction.Topic,
-		Partition:        config.ChannelKafkaConfigSetting.Transaction.Partition,
-		TransactionId:    config.ChannelKafkaConfigSetting.Transaction.TransactionId,
-		LingerMs:         config.ChannelKafkaConfigSetting.Transaction.LingerMs,
-		BatchSize:        config.ChannelKafkaConfigSetting.Transaction.BatchSize,
-		CompressionCodec: config.ChannelKafkaConfigSetting.Transaction.CompressionCodec,
-		Acks:             config.ChannelKafkaConfigSetting.Transaction.Acks,
-		Retries:          config.ChannelKafkaConfigSetting.Transaction.Retries,
+	consumer.TestKafkaConsumer = consumer.NewKafkaConsumer(&config.KafkaConsumerConfig{
+		BootstrapServers: config.ChannelKafkaConfigSetting.Consumer.BootstrapServers,
+		Topic:            config.ChannelKafkaConfigSetting.Consumer.Topic,
+		GroupId:          config.ChannelKafkaConfigSetting.Consumer.GroupId,
+		AutoOffsetReset:  config.ChannelKafkaConfigSetting.Consumer.AutoOffsetReset,
 	})
-
-	consumer.TestKafkaConsumer = consumer.NewKafkaConsumer(&config.KafkaConsumerConfig{Topic: })
 
 }
 
@@ -61,7 +66,7 @@ func setupConfig() error {
 	}
 
 	data, _ := json.Marshal(config.ChannelKafkaConfigSetting)
-	fmt.Println("----", string(data))
+	fmt.Println("----setupConfig ", string(data))
 
 	return nil
 }
@@ -77,16 +82,12 @@ func CustomPartition(value string) (partition int32) {
 }
 
 func main() {
-	//for i := 0; i < 50; i++ {
-	//	err := producer.TestKafkaProducer.Send([]byte("wxy"), CustomPartition)
-	//	if err != nil {
-	//		fmt.Println("Send err:", err)
-	//	}
-	//	time.Sleep(1 * time.Second)
-	//	fmt.Printf("i %d\n", i)
-	//}
+	doneChannel := make(chan struct{})
 
-	//TransactionUsage()
+	go consumerNew()
+
+	//time.Sleep(1 * time.Second)
+	go producerNew()
 
 	// 等待中断信号
 	quit := make(chan os.Signal)
@@ -96,8 +97,50 @@ func main() {
 	<-quit
 
 	// close
-	//producer.TransactionProducer.Close()
-	//producer.TestKafkaProducer.Close()
+	producer.TestKafkaProducer.Close()
+
+	consumer.TestKafkaConsumer.Close()
+}
+
+func producerNew(doneChannel chan struct{}) {
+
+	for {
+		select {
+		case <-doneChannel:
+			fmt.Println("生产者退出")
+			return
+		default:
+			err := producer.TestKafkaProducer.Send([]byte("wxy"), CustomPartition)
+			if err != nil {
+				fmt.Println("Send err:", err)
+			}
+			time.Sleep(1 * time.Second)
+			fmt.Printf(" producer i %d\n", i)
+
+		}
+
+	}
+
+	// 先关闭生产者
+	// 再关闭消费者
+	// 再关闭客户端
+}
+
+// 单个消费者 还要多个消费者
+
+func consumerNew(doneChannel chan struct{}) {
+
+	for {
+		select {
+		case <-doneChannel:
+			fmt.Println("消费者退出")
+			return
+		default:
+			consumer.TestKafkaConsumer.Consumer(consumer.HandlerTest)
+		}
+
+	}
+
 }
 
 func TransactionUsage() {

@@ -21,8 +21,9 @@ const (
 var (
 	GaoDeKafkaProducer   *KafkaProducer
 	TencentKafkaProducer *KafkaProducer
-	TestKafkaProducer    *KafkaProducer
 	TransactionProducer  *KafkaProducer
+
+	TestKafkaProducer *KafkaProducer
 )
 
 // 幂等性 保证生产的数据不会重复
