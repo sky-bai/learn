@@ -56,4 +56,4 @@ Consumer:
   BootstrapServers: 39.108.8.92:9092
   Topic: first
   GroupId: "1"
-  AutoOffsetReset: "earliest"
+  AutoOffsetReset: "latest"

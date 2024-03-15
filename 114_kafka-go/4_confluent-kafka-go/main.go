@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 )
@@ -81,13 +82,20 @@ func CustomPartition(value string) (partition int32) {
 	return 0
 }
 
-func main() {
-	doneChannel := make(chan struct{})
+var (
+	ProducerDoneChannel = make(chan struct{})
+	//ConsumerDoneChannel = make(chan struct{})
+)
 
-	go consumerNew()
+func main() {
+	producerNotifyChannel := make(chan struct{})
+	consumerNotifyChannel := make(chan struct{})
+
+	go consumerNew(consumerNotifyChannel)
+	time.Sleep(1 * time.Second)
 
 	//time.Sleep(1 * time.Second)
-	go producerNew()
+	go producerNew(producerNotifyChannel)
 
 	// 等待中断信号
 	quit := make(chan os.Signal)
@@ -96,26 +104,35 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
+	producerNotifyChannel <- struct{}{}
+	consumerNotifyChannel <- struct{}{}
+
+	<-ProducerDoneChannel
+	<-consumer.ConsumerDoneChannel
+
 	// close
 	producer.TestKafkaProducer.Close()
-
 	consumer.TestKafkaConsumer.Close()
 }
 
 func producerNew(doneChannel chan struct{}) {
 
+	i := 0
 	for {
 		select {
 		case <-doneChannel:
 			fmt.Println("生产者退出")
+			ProducerDoneChannel <- struct{}{}
 			return
 		default:
-			err := producer.TestKafkaProducer.Send([]byte("wxy"), CustomPartition)
+			s := strconv.Itoa(i)
+			err := producer.TestKafkaProducer.Send([]byte(s), CustomPartition)
 			if err != nil {
 				fmt.Println("Send err:", err)
 			}
-			time.Sleep(1 * time.Second)
 			fmt.Printf(" producer i %d\n", i)
+			time.Sleep(1 * time.Second)
+			i++
 
 		}
 
@@ -130,17 +147,19 @@ func producerNew(doneChannel chan struct{}) {
 
 func consumerNew(doneChannel chan struct{}) {
 
+	go consumer.TestKafkaConsumer.Consumer(consumer.HandlerTest)
+
 	for {
 		select {
 		case <-doneChannel:
-			fmt.Println("消费者退出")
+			fmt.Println("222")
+			consumer.TestKafkaConsumer.Done()
+			fmt.Println("555")
+			<-consumer.ConsumerDoneChannel
+			consumer.ConsumerDoneChannel <- struct{}{}
 			return
-		default:
-			consumer.TestKafkaConsumer.Consumer(consumer.HandlerTest)
 		}
-
 	}
-
 }
 
 func TransactionUsage() {
