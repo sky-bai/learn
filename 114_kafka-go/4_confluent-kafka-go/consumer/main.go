@@ -27,9 +27,10 @@ type KafkaConsumer struct {
 
 func NewKafkaConsumer(conf *config.KafkaConsumerConfig) *KafkaConsumer {
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": conf.BootstrapServers,
-		"group.id":          conf.GroupId,
-		"auto.offset.reset": conf.AutoOffsetReset,
+		"bootstrap.servers":             conf.BootstrapServers,
+		"group.id":                      conf.GroupId,
+		"auto.offset.reset":             conf.AutoOffsetReset,
+		"partition.assignment.strategy": "cooperative-sticky", // 设置粘性分区
 	})
 
 	if err != nil {
