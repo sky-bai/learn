@@ -18,7 +18,8 @@ func Split(s, sep string) (result []string) {
 }
 
 func main() {
-	ForRange()
+	//ForRange()
+	ss()
 }
 
 func ForRange() {
@@ -27,4 +28,9 @@ func ForRange() {
 		fmt.Println(i)
 
 	}
+}
+
+func ss() {
+	stri := strings.Split("22696167:113026061:1713485230073:-73:2003:1672:10700:420:20:0", ":")
+	fmt.Println(len(stri))
 }

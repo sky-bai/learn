@@ -1,0 +1,319 @@
+#stages:
+#  - build_image
+#  - deploy_dev
+#
+#variables:
+#  deploy_path: "/opt/gather" # 1.在测试服需要指定部署的路径
+#  registry_host: "registry-vpc.cn-shenzhen.aliyuncs.com" # 2.定义代码镜像仓库
+#  TAG: $CI_COMMIT_REF_NAME # 为其构建项目的分支或标签名称。相当于是测试服只通过分支(dev)来打包镜像和发布镜像 正式服通过标签名称来进行打包镜像。 测试服发布的时候不打tag,只推送dev分支。 正式服就打tag，推送main分支。
+#
+#before_script:
+#  - if [ -n "$CI_COMMIT_TAG" ]; then TAG=$CI_COMMIT_TAG; else TAG=$CI_COMMIT_REF_NAME; fi # 如果有tag就获取tag，没有就获取分支名
+#  - echo "Using TAG $TAG"
+#  - echo "CI_COMMIT_BRANCH=$CI_COMMIT_BRANCH"
+#  - echo "CI_COMMIT_TAG=$CI_COMMIT_TAG"
+#  # 私有库设置 打包机上面需要配置公众库的访问权限
+#  - go env -w GOINSECURE=cdgitlib.spreadwin.cn
+#  - go env -w GONOPROXY=cdgitlib.spreadwin.cn
+#  - go env -w GOPRIVATE=cdgitlib.spreadwin.cn
+#  - go env -w GOPROXY=https://goproxy.cn,direct
+#  # 私有库访问秘钥
+#  - git config --local credential.helper store
+#  # runner会生成自己的token，这一步直接替换掉
+#  - mv  ~/.git-credentials ~/.git-credentials.bak
+#  - echo -n "http://${PRIVATE_GO_USERNAME}:${PRIVATE_GO_PASSWORD}@cdgitlib.spreadwin.cn" > ~/.git-credentials
+#  - go env
+#
+#build_channel:
+#  stage: build_image
+#  tags:
+#    - n801-shell
+#  script:
+#    - export BINARY_NAME=channel
+#    # 本机编译
+#    - go build -gcflags='-N -l' -o ./dist/$BINARY_NAME ./app/$BINARY_NAME/cmd/$BINARY_NAME
+#    # 打包镜像
+#    - docker build -t $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG -f ./Dockerfile-local ./ --build-arg BINARY_NAME=$BINARY_NAME
+#    # 推送镜像
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD registry-vpc.cn-shenzhen.aliyuncs.com
+#    - docker push $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG
+#  rules:
+#    # dev分支或者有tag时，提供的文件夹有改动
+#    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_TAG # 是dev或者tag
+#      changes: # 有修改
+#        - app/channel/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local
+#
+#build_clueapi:
+#  stage: build_image
+#  tags:
+#    - n801-shell
+#  script:
+#    - export BINARY_NAME=clueapi
+#    # 本机编译
+#    - go build -gcflags='-N -l' -o ./dist/$BINARY_NAME ./app/$BINARY_NAME/cmd/$BINARY_NAME
+#    # 打包镜像
+#    - docker build -t $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG -f ./Dockerfile-local ./ --build-arg BINARY_NAME=$BINARY_NAME
+#    # 推送镜像
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD registry-vpc.cn-shenzhen.aliyuncs.com
+#    - docker push $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG
+#  rules:
+#    # dev分支或者有tag时，提供的文件夹有改动
+#    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_TAG # 是dev或者tag
+#      changes: # 有修改
+#        - app/clueapi/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local
+#
+#build_cluedevice:
+#  stage: build_image
+#  tags:
+#    - n801-shell
+#  script:
+#    - export BINARY_NAME=cluedevice
+#    # 本机编译
+#    - go build -gcflags='-N -l' -o ./dist/$BINARY_NAME ./app/$BINARY_NAME/cmd/$BINARY_NAME
+#    # 打包镜像
+#    - docker build -t $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG -f ./Dockerfile-local ./ --build-arg BINARY_NAME=$BINARY_NAME
+#    # 推送镜像
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD registry-vpc.cn-shenzhen.aliyuncs.com
+#    - docker push $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG
+#  rules:
+#    # dev分支或者有tag时，提供的文件夹有改动
+#    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_TAG # 是dev或者tag
+#      changes: # 有修改
+#        - app/cluedevice/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local
+#
+#build_carseries:
+#  stage: build_image
+#  tags:
+#    - n801-shell
+#  script:
+#    - export BINARY_NAME=carseries
+#    # 本机编译
+#    - go build -gcflags='-N -l' -o ./dist/$BINARY_NAME ./app/$BINARY_NAME/cmd/$BINARY_NAME
+#    # 打包镜像
+#    - docker build -t $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG -f ./Dockerfile-local ./ --build-arg BINARY_NAME=$BINARY_NAME
+#    # 推送镜像
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD registry-vpc.cn-shenzhen.aliyuncs.com
+#    - docker push $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG
+#  rules:
+#    # dev分支或者有tag时，提供的文件夹有改动
+#    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_TAG # 是dev或者tag
+#      changes: # 有修改
+#        - app/carseries/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local
+#
+#build_crashreview:
+#  stage: build_image
+#  tags:
+#    - n801-shell
+#  script:
+#    - export BINARY_NAME=crashreview
+#    # 本机编译
+#    - go build -gcflags='-N -l' -o ./dist/$BINARY_NAME ./app/$BINARY_NAME/cmd/$BINARY_NAME
+#    # 打包镜像
+#    - docker build -t $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG -f ./Dockerfile-local ./ --build-arg BINARY_NAME=$BINARY_NAME
+#    # 推送镜像
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD registry-vpc.cn-shenzhen.aliyuncs.com
+#    - docker push $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG
+#  rules:
+#    # dev分支或者有tag时，提供的文件夹有改动
+#    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_TAG # 是dev或者tag
+#      changes: # 有修改
+#        - app/crashreview/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local
+#
+#build_crashapi:
+#  stage: build_image
+#  tags:
+#    - n801-shell
+#  script:
+#    - export BINARY_NAME=crashapi
+#    # 本机编译
+#    - go build -gcflags='-N -l' -o ./dist/$BINARY_NAME ./app/$BINARY_NAME/cmd/$BINARY_NAME
+#    # 打包镜像
+#    - docker build -t $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG -f ./Dockerfile-local ./ --build-arg BINARY_NAME=$BINARY_NAME
+#    # 推送镜像
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD registry-vpc.cn-shenzhen.aliyuncs.com
+#    - docker push $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG
+#  rules:
+#    # dev分支或者有tag时，提供的文件夹有改动
+#    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_TAG # 是dev或者tag
+#      changes: # 有修改
+#        - app/crashapi/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local
+#
+#build_urlshorten:
+#  stage: build_image
+#  tags:
+#    - n801-shell
+#  script:
+#    - export BINARY_NAME=urlshorten
+#    # 本机编译
+#    - go build -gcflags='-N -l' -o ./dist/$BINARY_NAME ./app/$BINARY_NAME/cmd/$BINARY_NAME
+#    # 打包镜像
+#    - docker build -t $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG -f ./Dockerfile-local ./ --build-arg BINARY_NAME=$BINARY_NAME
+#    # 推送镜像
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD registry-vpc.cn-shenzhen.aliyuncs.com
+#    - docker push $registry_host/spreadwin/clue-server-$BINARY_NAME:$TAG
+#  rules:
+#    # dev分支或者有tag时，提供的文件夹有改动
+#    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_TAG # 是dev或者tag
+#      changes: # 有修改
+#        - app/urlshorten/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local
+#
+## 测试服部署
+#deploy_dev_crashreview:
+#  variables:
+#    GIT_STRATEGY: none
+#  stage: deploy_dev
+#  before_script: [ ]
+#  tags:
+#    - devServer
+#  script:
+#    - cd $deploy_path
+#    - export TAG=$TAG
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD $registry_host
+#    - ./restart_xx.sh crashreview
+#  needs:
+#    - build_crashreview
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == "dev"
+#      changes: # 有修改
+#        - app/crashreview/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local
+#
+## 测试服部署
+#deploy_dev_channel:
+#  variables:
+#    GIT_STRATEGY: none
+#  stage: deploy_dev
+#  before_script: [ ]
+#  tags:
+#    - devServer
+#  script:
+#    - cd $deploy_path
+#    - export TAG=$TAG
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD $registry_host
+#    - ./restart_xx.sh channel
+#  needs:
+#    - build_channel
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == "dev"
+#      changes: # 有修改
+#        - app/channel/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local
+#
+#deploy_dev_clueapi:
+#  variables:
+#    GIT_STRATEGY: none
+#  stage: deploy_dev
+#  before_script: [ ]
+#  tags:
+#    - devServer
+#  script:
+#    - cd $deploy_path
+#    - export TAG=$TAG
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD $registry_host
+#    - ./restart_xx.sh clueapi
+#  #  only:
+#  #    - dev
+#  needs:
+#    - build_clueapi
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == "dev"
+#      changes: # 有修改
+#        - app/clueapi/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local
+#
+#deploy_dev_cluedevice:
+#  variables:
+#    GIT_STRATEGY: none
+#  stage: deploy_dev
+#  before_script: [ ]
+#  tags:
+#    - devServer
+#  script:
+#    - cd $deploy_path
+#    - export TAG=$TAG
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD $registry_host
+#    - ./restart_xx.sh cluedevice
+#  needs:
+#    - build_cluedevice
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == "dev"
+#      changes: # 有修改
+#        - app/cluedevice/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local
+#
+#deploy_dev_carseries:
+#  variables:
+#    GIT_STRATEGY: none
+#  stage: deploy_dev
+#  before_script: [ ]
+#  tags:
+#    - devServer
+#  script:
+#    - cd $deploy_path
+#    - export TAG=$TAG
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD $registry_host
+#    - ./restart_xx.sh carseries
+#  #  only:
+#  #    - dev
+#  needs:
+#    - build_carseries
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == "dev"
+#      changes: # 有修改
+#        - app/carseries/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local
+#
+#deploy_dev_crashapi:
+#  variables:
+#    GIT_STRATEGY: none
+#  stage: deploy_dev
+#  before_script: [ ]
+#  tags:
+#    - devServer
+#  script:
+#    - cd $deploy_path
+#    - export TAG=$TAG
+#    - docker login -u $CI_REGISTRY_USER  -p $CI_REGISTRY_PASSWORD $registry_host
+#    - ./restart_xx.sh crashapi
+#  #  only:
+#  #    - dev
+#  needs:
+#    - build_crashapi
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == "dev"
+#      changes: # 有修改
+#        - app/crashapi/**/* # 所有
+#        - lib/**/* # 所有
+#        - .gitlab-ci.yml
+#        - Dockerfile-local

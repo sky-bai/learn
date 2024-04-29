@@ -26,4 +26,17 @@ func main() {
 	}
 
 	fmt.Println("222", paramMap1)
+
+	switchCase()
+}
+
+func switchCase() {
+
+	i := 3
+	switch i {
+	case 1, 2:
+		fmt.Println(" --- 1")
+	case 3:
+		fmt.Println(" --- 3")
+	}
 }

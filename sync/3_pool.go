@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"sync"
+	"time"
 )
 
 var studentPool = sync.Pool{
@@ -18,3 +20,11 @@ type Student struct {
 }
 
 var buf, _ = json.Marshal(Student{Name: "Geektutu", Age: 25})
+
+func main() {
+	data := []string{"hello", "sdfaf"}
+	dataStr, _ := json.Marshal(data)
+	fmt.Println(string(dataStr))
+
+	fmt.Println(time.Now().Format("01-02 15:04:05"))
+}

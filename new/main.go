@@ -12,7 +12,8 @@ import (
 
 func serveWechat(rw http.ResponseWriter, req *http.Request) {
 	wc := wechat.NewWechat()
-	//这里本地内存保存access_token，也可选择redis，memcache或者自定cache
+	//这里本地内存保存access_token，也可选择redis，memcache或者自定cache memcache 和自定义的cache有什么区别吗？
+	// 1.设置缓存
 	memory := cache.NewMemory()
 	cfg := &offConfig.Config{
 		AppID:     "wx812ceea1f2d8a505",
