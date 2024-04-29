@@ -20,7 +20,7 @@
 #  # 私有库访问秘钥
 #  - git config --local credential.helper store
 #  # runner会生成自己的token，这一步直接替换掉
-#  - mv  ~/.git-credentials ~/.git-credentials.bak
+#  - mv  ~/.git-credentials ~/.git-credentials.bak`
 #  - echo -n "http://${PRIVATE_GO_USERNAME}:${PRIVATE_GO_PASSWORD}@cdgitlib.spreadwin.cn" > ~/.git-credentials
 #  - go env
 #
