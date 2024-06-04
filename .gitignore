@@ -21,3 +21,9 @@ go.mod
 !/go.mod
 !/go.sum
 .idea/sonarIssues.xml
+
+*.xlsx
+*.xml
+*.txt
+
+.idea/
