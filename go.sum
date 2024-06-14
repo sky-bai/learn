@@ -633,10 +633,15 @@ github.com/go-openapi/jsonreference v0.19.3/go.mod h1:rjx6GuL8TTa9VaixXglHmQmIL9
 github.com/go-openapi/spec v0.19.3/go.mod h1:FpwSN1ksY1eteniUU7X0N/BgJ7a4WvBFVA8Lj9mJglo=
 github.com/go-openapi/swag v0.19.2/go.mod h1:POnQmlKehdgb5mhVOsnJFsivZCEZ/vjK9gh66Z9tfKk=
 github.com/go-openapi/swag v0.19.5/go.mod h1:POnQmlKehdgb5mhVOsnJFsivZCEZ/vjK9gh66Z9tfKk=
+github.com/go-pay/bm v0.0.1 h1:F2d1KhrupJr7yGPCQTVeYjeOJwN35WhoofopSm6undY=
+github.com/go-pay/bm v0.0.1/go.mod h1:/6bIb0yBj8JbATmE+ib41me4RikMGN3f/XSDF5FjsPQ=
 github.com/go-pay/gopay v1.5.100 h1:jFpyLA/flrSigY0WFpNaSuQcMFn0yjFpObBnlTzqO9Y=
 github.com/go-pay/gopay v1.5.100/go.mod h1:3z9xfh7w3x5rJzH9qFb3oxPOeaBrFP4kB3LNVXbziHM=
 github.com/go-pay/util v0.0.2 h1:goJ4f6kNY5zzdtg1Cj8oWC+Cw7bfg/qq2rJangMAb9U=
+github.com/go-pay/xhttp v0.0.2 h1:O8rnd/d03WsboFtUthwFMg61ikHRfYHyD1m0JiUx60g=
+github.com/go-pay/xhttp v0.0.2/go.mod h1:BnuvXpLKkXTFMOBc5MTb0hxdrstwunbzQPJUZOsNbt4=
 github.com/go-pay/xlog v0.0.2 h1:kUg5X8/5VZAPDg1J5eGjA3MG0/H5kK6Ew0dW/Bycsws=
+github.com/go-pay/xlog v0.0.2/go.mod h1:DbjMADPK4+Sjxj28ekK9goqn4zmyY4hql/zRiab+S9E=
 github.com/go-playground/assert/v2 v2.0.1/go.mod h1:VDjEfimB/XKnb+ZQfWdccd7VUvScMdVu0Titje2rxJ4=
 github.com/go-playground/assert/v2 v2.2.0 h1:JvknZsQTYeFEAhQwI4qEt9cyV5ONwRHC+lYKSsYSR8s=
 github.com/go-playground/locales v0.13.0/go.mod h1:taPMhCMXrRLJO55olJkUXHZBHCxTMfnGwq/HNwmWNS8=
