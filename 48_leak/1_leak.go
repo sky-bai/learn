@@ -1,10 +1,16 @@
 package main
 
-import "fmt"
+type Leak struct {
+	ch chan struct{}
+}
 
-func main() {
-	fmt.Println("--====", len("123"))
-	str := "2222"
-	// 取str前三位
-	str = str[:3]
+func NewLeak(ch chan struct{}) *Leak {
+	return &Leak{ch: ch}
+}
+
+func (l *Leak) leak() {
+	ch := make(chan struct{})
+	go func() {
+		ch <- struct{}{}
+	}()
 }
