@@ -27,3 +27,5 @@ go.mod
 *.txt
 
 .idea/
+
+0_company/
