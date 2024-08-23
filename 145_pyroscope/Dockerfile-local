@@ -1,0 +1,16 @@
+# 二进制名
+ARG BINARY_NAME
+# 使用定制busybox打包镜像，默认使用vpc网络
+FROM registry-vpc.cn-shenzhen.aliyuncs.com/spreadwin/busybox-xj:latest as release
+ARG BINARY_NAME
+
+RUN mkdir /app
+COPY  --chmod=0755  ./dist/${BINARY_NAME} /app/${BINARY_NAME}
+
+# 使用脚本启动二进制，让进程名更友好
+RUN echo "#!/bin/sh" > /docker-entrypoint.sh \
+    && echo "/app/${BINARY_NAME} \"\$@\"" >> /docker-entrypoint.sh \
+    && chmod +x /docker-entrypoint.sh
+
+EXPOSE 4800 7200
+ENTRYPOINT ["/docker-entrypoint.sh"]
