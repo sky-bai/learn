@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 )
 
 func do() error {
@@ -21,6 +22,7 @@ func main() {
 		fmt.Println(" handle /redis error")
 	}
 
+	Is()
 }
 
 var ActionRedis = errors.New("ActionRedis: redis error")
@@ -34,3 +36,13 @@ func handle() error {
 }
 
 // 什么时候需要打印堆栈信息？
+
+func Is() {
+	e1 := fmt.Errorf("e1: %w", io.EOF)
+	e2 := fmt.Errorf("e2: %w + %w", e1, io.ErrClosedPipe)
+	e3 := fmt.Errorf("e3: %w", e2)
+	e4 := fmt.Errorf("e4: %w", e3)
+	fmt.Println(errors.Is(e4, io.EOF))              // true
+	fmt.Println(errors.Is(e4, io.ErrClosedPipe))    // true
+	fmt.Println(errors.Is(e4, io.ErrUnexpectedEOF)) // false
+}

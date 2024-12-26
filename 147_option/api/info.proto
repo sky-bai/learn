@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+
+package stock;
+
+
+service Stock {
+
+  // 下单
+  rpc WechatAppTransactions (WechatAppTransactionsRequest) returns (WechatAppTransactionsReply) {}
+}

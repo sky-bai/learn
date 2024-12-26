@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/pkg/errors"
+	"io"
 	"os"
 )
 
@@ -17,7 +18,7 @@ func main() {
 		fmt.Printf("stack trace error:  %+v \n", err)                                // %+v 打印错误堆栈信息
 	}
 	//err = fmt.Errorf("access denied: %w", ErrPermission) // 加入额外信息
-	//
+	//  errors.Is()
 	//if errors.Is(err, ErrNotFound) {
 	//	// 将错误与sentinel 错误 进行比较
 	//}
@@ -43,3 +44,33 @@ func WrapError(path string) error {
 	}
 	return nil
 }
+
+//func AuthenticateRequest(r *Request) error {
+//	err := authenticate(r.User)
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}
+//
+//func AuthenticateRequest(r *Request) error {
+//	return authenticate(r.User)
+//}
+
+func ReadFile(path string) ([]byte, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, errors.Wrap(err, "open failed") //
+	}
+	defer f.Close()
+
+	buf, err := io.ReadAll(f)
+	if err != nil {
+		return nil, errors.Wrap(err, "read failed")
+	}
+	return buf, nil
+}
+
+// 消耗身体里面无用的细胞
+
+//

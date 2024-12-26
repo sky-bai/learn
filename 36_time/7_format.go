@@ -25,4 +25,11 @@ func main() {
 	ymdhis := time.Now().Format("2006-01-02 15:04:05")
 	fmt.Println(ymdhis)
 
+	timeString := time.Now().String()
+	fmt.Println(timeString)
+
+	// 年月日
+	ymd := time.Now().Format("2006-01-02")
+	fmt.Println(ymd)
+
 }

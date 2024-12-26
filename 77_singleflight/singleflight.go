@@ -246,6 +246,8 @@ func (g *Group) doCall(c *call, key string, fn func() (interface{}, error)) { //
 	}
 }
 
+// 只需要使用这个工具 掌握使用方法
+
 // do方法整体逻辑
 // 解决什么样的问题
 

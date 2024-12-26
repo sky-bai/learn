@@ -25,3 +25,15 @@ func doReturn() {
 }
 
 // 函数里面return不会影响上层for循环
+
+func forSelectReturn() {
+	for {
+		select {
+		case <-time.After(time.Second * 1):
+			fmt.Println("time.After")
+			return
+		}
+
+		fmt.Println("for")
+	}
+}

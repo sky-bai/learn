@@ -111,3 +111,6 @@ func main() {
 	signal.Notify(c, os.Interrupt)
 	<-c
 }
+
+// 每种模式的配置文件不一样
+// 1. 直连模式 需要确定的是什么 在什么场景下需要
