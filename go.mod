@@ -12,6 +12,7 @@ require (
 	github.com/chromedp/chromedp v0.9.1
 	github.com/confluentinc/confluent-kafka-go/v2 v2.3.0
 	github.com/currantlabs/ble v0.0.0-20171229162446-c1d21c164cf8
+	github.com/duke-git/lancet/v2 v2.3.4
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-pay/gopay v1.5.100
