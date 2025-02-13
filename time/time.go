@@ -32,6 +32,8 @@ func main() {
 	}
 	fmt.Println("--- second", ti.Second())
 
+	fmt.Println(time.Now().Format("2006-0102-150405"))
+
 }
 
 func timeSub() {
