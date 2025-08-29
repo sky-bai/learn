@@ -2,6 +2,8 @@ package domain
 
 import "time"
 
+// https://gitee.com/flycash/notification-platform
+
 // Notification 通知领域模型
 type Notification struct {
 	ID             uint64    // 通知唯一标识
